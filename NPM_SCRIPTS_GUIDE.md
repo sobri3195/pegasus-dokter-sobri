@@ -209,6 +209,94 @@ npm run check
 🎉 Backend connection check complete!
 ```
 
+#### `npm run test:connection`
+Runs comprehensive connection test suite.
+- **Best for**: Detailed system verification
+- Tests backend process
+- Tests frontend process
+- Tests all API endpoints
+- Verifies Python dependencies
+- Checks data directory
+- Returns detailed pass/fail report
+
+```bash
+npm run test:connection
+```
+
+**Output (when working):**
+```
+╔═══════════════════════════════════════════════════════════╗
+║     BACKEND CONNECTION COMPREHENSIVE TEST                 ║
+╚═══════════════════════════════════════════════════════════╝
+
+Test 1: Backend Process Check
+  ✅ PASS - Backend process is running
+
+Test 2: Frontend Process Check
+  ✅ PASS - Frontend process is running
+
+Test 3: Backend Health Endpoint (Direct)
+  ✅ PASS - Backend responding (HTTP 200)
+
+Test 4: Frontend Proxy Check
+  ✅ PASS - Frontend proxy working (HTTP 200)
+
+Test 5: Python Dependencies Check
+  ✅ PASS - Core Python packages installed
+
+Test 6: Data Directory Check
+  ✅ PASS - Data directory and scans.json exist
+
+Test 7: API Endpoints Availability
+  ✅ PASS - All endpoints responding
+
+╔═══════════════════════════════════════════════════════════╗
+║                    TEST SUMMARY                           ║
+╚═══════════════════════════════════════════════════════════╝
+
+Tests Passed: 7
+Tests Failed: 0
+
+🎉 ALL TESTS PASSED! Backend is fully connected and operational.
+```
+
+#### `npm run status`
+Shows visual system status dashboard.
+- **Best for**: Quick overview of all services
+- Shows backend status (running/stopped)
+- Shows frontend status (running/stopped)
+- Shows connection status
+- Shows Python dependencies status
+- Lists quick commands and access URLs
+
+```bash
+npm run status
+```
+
+**Output:**
+```
+╔════════════════════════════════════════════════════════════════╗
+║   VULNERABILITY SCANNER - SYSTEM STATUS                        ║
+╚════════════════════════════════════════════════════════════════╝
+
+┌─── BACKEND SERVER ────────────────────────────────────────────┐
+│  Status:  🟢 RUNNING                                          │
+│  Port:    5000                                               │
+│  URL:     http://localhost:5000                              │
+│  Health:  ✅ Responding                                      │
+└───────────────────────────────────────────────────────────────┘
+
+┌─── FRONTEND SERVER ───────────────────────────────────────────┐
+│  Status:  🟢 RUNNING                                          │
+│  Port:    3000                                               │
+│  URL:     http://localhost:3000                              │
+└───────────────────────────────────────────────────────────────┘
+
+┌─── CONNECTION STATUS ─────────────────────────────────────────┐
+│  Overall: 🟢 FULLY CONNECTED AND OPERATIONAL                 │
+└───────────────────────────────────────────────────────────────┘
+```
+
 ## 🚀 Quick Start Workflows
 
 ### For Frontend Development
