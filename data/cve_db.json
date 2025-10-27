@@ -1,0 +1,205 @@
+{
+  "libraries": {
+    "jquery": {
+      "versions": {
+        "1.x": {
+          "max_safe": "1.12.4",
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2015-9251",
+              "severity": "Medium",
+              "description": "XSS vulnerability in jQuery before 3.0.0",
+              "affected": ["<3.0.0"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2015-9251"
+            },
+            {
+              "cve": "CVE-2019-11358",
+              "severity": "Medium",
+              "description": "Prototype pollution in jQuery",
+              "affected": ["<3.4.0"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2019-11358"
+            }
+          ]
+        },
+        "2.x": {
+          "max_safe": "2.2.4",
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2015-9251",
+              "severity": "Medium",
+              "description": "XSS vulnerability",
+              "affected": ["<3.0.0"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2015-9251"
+            }
+          ]
+        },
+        "3.x": {
+          "max_safe": "3.5.0",
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2020-11022",
+              "severity": "Medium",
+              "description": "XSS via HTML containing <option> elements",
+              "affected": ["<3.5.0"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2020-11022"
+            },
+            {
+              "cve": "CVE-2020-11023",
+              "severity": "Medium",
+              "description": "Passing HTML containing <option> elements",
+              "affected": ["<3.5.0"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2020-11023"
+            }
+          ]
+        }
+      }
+    },
+    "react": {
+      "versions": {
+        "16.x": {
+          "max_safe": "16.14.0",
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2018-6341",
+              "severity": "Low",
+              "description": "XSS in development mode",
+              "affected": ["<16.4.2"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2018-6341"
+            }
+          ]
+        },
+        "17.x": {
+          "max_safe": "17.0.2",
+          "vulnerabilities": []
+        },
+        "18.x": {
+          "max_safe": "18.2.0",
+          "vulnerabilities": []
+        }
+      }
+    },
+    "angular": {
+      "versions": {
+        "1.x": {
+          "max_safe": "1.8.2",
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2019-10768",
+              "severity": "High",
+              "description": "Prototype pollution",
+              "affected": ["<1.7.9"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2019-10768"
+            },
+            {
+              "cve": "CVE-2020-7676",
+              "severity": "High",
+              "description": "XSS in $sanitize service",
+              "affected": ["<1.8.0"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2020-7676"
+            }
+          ]
+        },
+        "2.x": {
+          "max_safe": "2.4.10",
+          "vulnerabilities": []
+        }
+      }
+    },
+    "vue": {
+      "versions": {
+        "2.x": {
+          "max_safe": "2.7.14",
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2020-15883",
+              "severity": "Medium",
+              "description": "XSS via v-html directive",
+              "affected": ["<2.6.12"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2020-15883"
+            }
+          ]
+        },
+        "3.x": {
+          "max_safe": "3.3.4",
+          "vulnerabilities": []
+        }
+      }
+    }
+  },
+  "cms": {
+    "wordpress": {
+      "versions": {
+        "4.x": {
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2019-8942",
+              "severity": "High",
+              "description": "Arbitrary file deletion",
+              "affected": ["<5.0.3"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2019-8942"
+            }
+          ]
+        },
+        "5.x": {
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2020-4046",
+              "severity": "Medium",
+              "description": "User activation vulnerability",
+              "affected": ["<5.4.2"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2020-4046"
+            },
+            {
+              "cve": "CVE-2022-21661",
+              "severity": "High",
+              "description": "SQL injection vulnerability",
+              "affected": ["<5.8.3"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2022-21661"
+            }
+          ]
+        }
+      }
+    },
+    "joomla": {
+      "versions": {
+        "3.x": {
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2020-10238",
+              "severity": "High",
+              "description": "SQL injection",
+              "affected": ["<3.9.16"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2020-10238"
+            }
+          ]
+        }
+      }
+    },
+    "drupal": {
+      "versions": {
+        "7.x": {
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2018-7600",
+              "severity": "Critical",
+              "description": "Drupalgeddon 2 - Remote Code Execution",
+              "affected": ["<7.58"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2018-7600"
+            }
+          ]
+        },
+        "8.x": {
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2018-7600",
+              "severity": "Critical",
+              "description": "Drupalgeddon 2 - Remote Code Execution",
+              "affected": ["<8.5.1"],
+              "reference": "https://nvd.nist.gov/vuln/detail/CVE-2018-7600"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -211,6 +211,54 @@ app.get('/stats', (req, res) => {
   res.json(stats);
 });
 
+// Ultimate Scanner with all 10 advanced features
+app.post('/ultimate-scan', async (req, res) => {
+  const { url, config } = req.body;
+
+  if (!url) {
+    return res.status(400).json({ error: 'URL is required' });
+  }
+
+  console.log(`Starting ultimate scan for: ${url}`);
+  console.log('Config:', config);
+
+  const configJson = JSON.stringify(config || {});
+  const pythonProcess = spawn('python3', ['backend/ultimate_scanner.py', url, configJson]);
+
+  let output = '';
+  let errorOutput = '';
+
+  pythonProcess.stdout.on('data', (data) => {
+    output += data.toString();
+  });
+
+  pythonProcess.stderr.on('data', (data) => {
+    errorOutput += data.toString();
+    console.log('Ultimate Scanner log:', data.toString());
+  });
+
+  pythonProcess.on('close', (code) => {
+    if (code !== 0) {
+      console.error('Scanner error:', errorOutput);
+      return res.status(500).json({ error: 'Scan failed', details: errorOutput });
+    }
+
+    try {
+      const result = JSON.parse(output);
+      
+      const scans = loadScans();
+      scans.push(result);
+      saveScans(scans);
+
+      console.log('Ultimate scan completed successfully');
+      res.json(result);
+    } catch (error) {
+      console.error('Failed to parse scanner output:', error);
+      res.status(500).json({ error: 'Failed to parse scan results', output });
+    }
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
   console.log('Python scanner ready');
