@@ -51,7 +51,7 @@ const ScanWebsite = () => {
     e.preventDefault()
     
     if (backendStatus !== 'connected') {
-      setError('Backend server is not running. Please start the backend server with "npm run scan" in a separate terminal.')
+      setError('Backend server is not running. Please start the backend server with "npm run backend" in a separate terminal.')
       return
     }
 
