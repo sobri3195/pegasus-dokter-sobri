@@ -4,25 +4,73 @@ Admin Panel sederhana untuk melakukan scanning vulnerability website menggunakan
 
 ## 🚀 Fitur
 
-- **Dashboard**: Menampilkan statistik scan dan vulnerability
-- **Scan Website**: Form input URL untuk melakukan scanning
+### Core Features:
+- **Dashboard**: Menampilkan statistik scan dan vulnerability dengan grafik trend
+- **Scan Website**: Form input URL dengan mode Advanced Scan
 - **Hasil Scan**: Riwayat semua scan yang pernah dilakukan
 - **Python Scanner**: Melakukan scanning vulnerability secara real-time
 
-### Vulnerability Detection:
-- ✅ HTTP Status & Availability Check
-- ✅ SSL Certificate Validation
-- ✅ Security Headers Detection
-- ✅ Open Ports Scanning
-- ✅ Redirect Chain Detection
-- ✅ Missing Security Headers
+### 10 Advanced Features:
+
+1. **🔬 Deep Vulnerability Scanner**
+   - Layer 3-4: Port scanning (socket check)
+   - Layer 7: HTTP/HTTPS scan
+   - Application Layer: XSS, SQL Injection, directory listing, header security, cookie issues
+   - Configurable via Advanced Scan menu
+
+2. **🧠 AI-Assisted Vulnerability Classification**
+   - Automatic vulnerability categorization (XSS, CSRF, RCE, SQLi, etc.)
+   - AI-powered recommendations for each finding
+   - Smart pattern matching
+
+3. **🔍 Subdomain & Directory Enumeration**
+   - DNS-based subdomain discovery
+   - Hidden directory/path detection
+   - Risk assessment for discovered paths
+
+4. **⚙️ Common Vulnerability Signature Database**
+   - Local `vuln_signatures.json` with patterns
+   - Regex-based XSS/SQLi detection
+   - Offline updates supported
+
+5. **📈 Risk Scoring System**
+   - 0-100 security score calculation
+   - Severity-weighted scoring (Critical=15, High=10, Medium=5, Low=2)
+   - Color-coded indicators (Green/Orange/Red)
+
+6. **🧾 Exploit Simulation (Safe Mode)**
+   - Non-destructive vulnerability testing
+   - Safe payload validation
+   - No actual exploitation
+
+7. **🔒 SSL & Certificate Analyzer**
+   - Certificate validity and expiration check
+   - Cipher strength analysis
+   - Self-signed certificate detection
+   - TLS version identification
+
+8. **🧰 Configuration & Header Hardening Report**
+   - Comprehensive security header audit
+   - Cookie security analysis
+   - Detailed remediation checklist
+
+9. **🕵️ Vulnerability Trend Tracking**
+   - Historical trend visualization
+   - Daily/weekly/monthly statistics
+   - Line and bar charts
+
+10. **⚡ Offline Penetration Toolkit Integration**
+    - nmap integration (port scanning)
+    - whatweb (technology fingerprinting)
+    - sslscan (SSL/TLS analysis)
 
 ## 🛠️ Teknologi
 
-- **Frontend**: React 18 + Vite + Tailwind CSS
+- **Frontend**: React 18 + Vite + Tailwind CSS + Recharts
 - **Backend**: Node.js (Express) + Python 3
-- **Scanner**: Python (requests, ssl, socket)
+- **Scanner**: Python (requests, ssl, socket, dnspython, beautifulsoup4, python-nmap)
 - **Data Storage**: JSON file (tanpa database)
+- **Visualization**: Recharts for trend graphs
 
 ## 📦 Instalasi
 
@@ -54,6 +102,7 @@ Aplikasi akan berjalan di:
 
 ## 📖 Cara Penggunaan
 
+### Basic Scan:
 1. Buka aplikasi di browser (http://localhost:3000)
 2. Navigasi ke "Scan Website"
 3. Masukkan URL target (contoh: https://example.com)
@@ -61,15 +110,35 @@ Aplikasi akan berjalan di:
 5. Tunggu hasil scanning
 6. Lihat riwayat scan di menu "Hasil Scan"
 
+### Advanced Scan:
+1. Navigasi ke "Scan Website"
+2. Aktifkan "Advanced Scan Mode" checkbox
+3. Pilih opsi scan yang diinginkan:
+   - Port Scanning
+   - Subdomain Enumeration
+   - Directory Enumeration
+   - XSS Testing
+   - SQL Injection Testing
+   - External Tools Integration
+4. Klik "Start Advanced Scan"
+5. Review hasil komprehensif dengan risk score dan recommendations
+
+### View Trends:
+1. Navigasi ke "Dashboard"
+2. Lihat grafik tren vulnerability
+3. Monitor aktivitas scan dan statistik
+
 ## 📁 Struktur Project
 
 ```
 .
 ├── backend/
-│   ├── scanner.py          # Python scanner script
+│   ├── scanner.py          # Basic Python scanner script
+│   ├── advanced_scanner.py # Advanced scanner with 10 features
 │   └── requirements.txt    # Python dependencies
 ├── data/
-│   └── scans.json         # Scan results storage
+│   ├── scans.json         # Scan results storage
+│   └── vuln_signatures.json # Vulnerability signature database
 ├── src/
 │   ├── components/
 │   │   ├── Sidebar.jsx    # Sidebar navigation
