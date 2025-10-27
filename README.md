@@ -141,14 +141,35 @@ pip install -r backend/requirements.txt
 
 ### 2. Jalankan Aplikasi
 
+#### Opsi A - Jalankan Semua Sekaligus (Recommended):
+```bash
+npm run start:all
+# atau
+npm start
+```
+
+#### Opsi B - Jalankan Terpisah:
+
 **Terminal 1 - Backend Server (Node.js + Python):**
 ```bash
-npm run scan
+npm run backend
 ```
 
 **Terminal 2 - Frontend Development Server:**
 ```bash
 npm run dev
+```
+
+#### Opsi C - Jalankan Scanner Python Standalone:
+```bash
+# Basic Scanner
+npm run scan https://example.com
+
+# Advanced Scanner
+npm run scan:advanced https://example.com '{"port_scan": true, "xss_test": true}'
+
+# Ultimate Scanner
+npm run scan:ultimate https://example.com '{"active_exploit": true, "crawl_depth": 2}'
 ```
 
 Aplikasi akan berjalan di:
@@ -272,6 +293,17 @@ Scanner melakukan pengecekan terhadap:
 - Hasil disimpan dalam file JSON lokal
 - Tidak menggunakan database atau REST API kompleks
 - Komunikasi Frontend-Backend via Express yang memanggil Python subprocess
+
+## 📚 Dokumentasi Lengkap
+
+- [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Referensi cepat npm scripts
+- [NPM_SCRIPTS_GUIDE.md](NPM_SCRIPTS_GUIDE.md) - Panduan lengkap npm scripts
+- [USAGE_EXAMPLES.md](USAGE_EXAMPLES.md) - Contoh penggunaan praktis
+- [QUICK_START.md](QUICK_START.md) - Panduan mulai cepat
+- [FEATURES.md](FEATURES.md) - Detail fitur lengkap
+- [ADVANCED_FEATURES.md](ADVANCED_FEATURES.md) - Fitur advanced scanner
+- [ULTIMATE_SCANNER.md](ULTIMATE_SCANNER.md) - Dokumentasi ultimate scanner
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Panduan deployment
 
 ## 🤝 Contributing
 
