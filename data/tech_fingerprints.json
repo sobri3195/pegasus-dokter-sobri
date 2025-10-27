@@ -1,0 +1,213 @@
+{
+  "cms": {
+    "WordPress": {
+      "indicators": [
+        "/wp-content/",
+        "/wp-includes/",
+        "/wp-admin/",
+        "wp-json",
+        "WordPress"
+      ],
+      "headers": ["X-Powered-By: WordPress"],
+      "meta_tags": ["generator.*WordPress"],
+      "cookies": ["wordpress_", "wp-settings"],
+      "risk_level": "Medium",
+      "common_vulns": ["Plugin vulnerabilities", "Theme vulnerabilities", "Outdated core"]
+    },
+    "Joomla": {
+      "indicators": [
+        "/administrator/",
+        "/components/com_",
+        "/modules/mod_",
+        "Joomla"
+      ],
+      "headers": [],
+      "meta_tags": ["generator.*Joomla"],
+      "cookies": [],
+      "risk_level": "Medium",
+      "common_vulns": ["Extension vulnerabilities", "Outdated core"]
+    },
+    "Drupal": {
+      "indicators": [
+        "/sites/default/",
+        "/modules/",
+        "/themes/",
+        "Drupal"
+      ],
+      "headers": ["X-Generator: Drupal"],
+      "meta_tags": ["generator.*Drupal"],
+      "cookies": ["SESS"],
+      "risk_level": "Medium",
+      "common_vulns": ["Module vulnerabilities", "Drupalgeddon"]
+    },
+    "Magento": {
+      "indicators": [
+        "/skin/frontend/",
+        "/media/catalog/",
+        "Mage.Cookies"
+      ],
+      "headers": [],
+      "meta_tags": [],
+      "cookies": ["frontend"],
+      "risk_level": "High",
+      "common_vulns": ["E-commerce data exposure", "Payment vulnerabilities"]
+    },
+    "Shopify": {
+      "indicators": [
+        "cdn.shopify.com",
+        "myshopify.com",
+        "Shopify"
+      ],
+      "headers": ["X-ShopId"],
+      "meta_tags": [],
+      "cookies": ["_shopify"],
+      "risk_level": "Low",
+      "common_vulns": ["Third-party app vulnerabilities"]
+    }
+  },
+  "frameworks": {
+    "Laravel": {
+      "indicators": [
+        "laravel_session",
+        "XSRF-TOKEN"
+      ],
+      "headers": ["X-Powered-By: PHP"],
+      "cookies": ["laravel_session", "XSRF-TOKEN"],
+      "risk_level": "Low",
+      "common_vulns": ["Misconfiguration", "Debug mode enabled"]
+    },
+    "Django": {
+      "indicators": [
+        "csrftoken",
+        "sessionid",
+        "__admin"
+      ],
+      "headers": [],
+      "cookies": ["csrftoken", "sessionid"],
+      "risk_level": "Low",
+      "common_vulns": ["Debug mode enabled", "ALLOWED_HOSTS misconfiguration"]
+    },
+    "Express": {
+      "indicators": [
+        "express"
+      ],
+      "headers": ["X-Powered-By: Express"],
+      "cookies": ["connect.sid"],
+      "risk_level": "Low",
+      "common_vulns": ["Outdated dependencies", "Missing security headers"]
+    },
+    "Ruby on Rails": {
+      "indicators": [
+        "_session",
+        "rails"
+      ],
+      "headers": ["X-Powered-By: Phusion Passenger"],
+      "cookies": ["_session"],
+      "risk_level": "Low",
+      "common_vulns": ["Mass assignment", "CSRF vulnerabilities"]
+    },
+    "Spring Boot": {
+      "indicators": [
+        "/actuator/",
+        "Whitelabel Error Page"
+      ],
+      "headers": [],
+      "cookies": ["JSESSIONID"],
+      "risk_level": "Medium",
+      "common_vulns": ["Actuator exposure", "Deserialization"]
+    }
+  },
+  "servers": {
+    "Apache": {
+      "indicators": ["Apache"],
+      "headers": ["Server: Apache"],
+      "risk_level": "Low",
+      "common_vulns": ["Version disclosure", "Module vulnerabilities"]
+    },
+    "Nginx": {
+      "indicators": ["nginx"],
+      "headers": ["Server: nginx"],
+      "risk_level": "Low",
+      "common_vulns": ["Misconfiguration", "Version disclosure"]
+    },
+    "IIS": {
+      "indicators": ["Microsoft-IIS"],
+      "headers": ["Server: Microsoft-IIS"],
+      "risk_level": "Medium",
+      "common_vulns": ["Windows vulnerabilities", "ASP.NET issues"]
+    },
+    "Tomcat": {
+      "indicators": ["Tomcat"],
+      "headers": ["Server: Apache-Coyote"],
+      "risk_level": "Medium",
+      "common_vulns": ["Manager console exposure", "Outdated version"]
+    }
+  },
+  "languages": {
+    "PHP": {
+      "indicators": [".php", "PHPSESSID"],
+      "headers": ["X-Powered-By: PHP"],
+      "cookies": ["PHPSESSID"],
+      "risk_level": "Medium",
+      "common_vulns": ["LFI/RFI", "Code injection", "Outdated version"]
+    },
+    "ASP.NET": {
+      "indicators": [".aspx", "ASP.NET"],
+      "headers": ["X-Powered-By: ASP.NET", "X-AspNet-Version"],
+      "cookies": ["ASP.NET_SessionId"],
+      "risk_level": "Medium",
+      "common_vulns": ["ViewState vulnerabilities", "Version disclosure"]
+    },
+    "Node.js": {
+      "indicators": ["node"],
+      "headers": ["X-Powered-By: Express"],
+      "cookies": [],
+      "risk_level": "Low",
+      "common_vulns": ["NPM package vulnerabilities", "Prototype pollution"]
+    },
+    "Python": {
+      "indicators": ["wsgi", "python"],
+      "headers": [],
+      "cookies": [],
+      "risk_level": "Low",
+      "common_vulns": ["Pickle deserialization", "SSTI"]
+    }
+  },
+  "libraries": {
+    "jQuery": {
+      "patterns": ["jquery", "jQuery"],
+      "cdn_patterns": ["jquery.min.js", "jquery.js"],
+      "version_regex": "jquery[/-](\\d+\\.\\d+\\.\\d+)",
+      "risk_level": "Low",
+      "check_cve": true
+    },
+    "React": {
+      "patterns": ["react", "React"],
+      "cdn_patterns": ["react.min.js", "react-dom.min.js"],
+      "version_regex": "react[@/](\\d+\\.\\d+\\.\\d+)",
+      "risk_level": "Low",
+      "check_cve": true
+    },
+    "Angular": {
+      "patterns": ["angular", "Angular", "ng-"],
+      "cdn_patterns": ["angular.min.js", "angular.js"],
+      "version_regex": "angular[/-](\\d+\\.\\d+\\.\\d+)",
+      "risk_level": "Low",
+      "check_cve": true
+    },
+    "Vue": {
+      "patterns": ["vue", "Vue"],
+      "cdn_patterns": ["vue.min.js", "vue.js"],
+      "version_regex": "vue[@/](\\d+\\.\\d+\\.\\d+)",
+      "risk_level": "Low",
+      "check_cve": true
+    },
+    "Bootstrap": {
+      "patterns": ["bootstrap"],
+      "cdn_patterns": ["bootstrap.min.js", "bootstrap.min.css"],
+      "version_regex": "bootstrap[/-](\\d+\\.\\d+\\.\\d+)",
+      "risk_level": "Low",
+      "check_cve": false
+    }
+  }
+}

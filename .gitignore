@@ -64,6 +64,10 @@ lerna-debug.log*
 # Data files (optional - uncomment if you don't want to track scan results)
 # data/scans.json
 
+# Generated reports
+reports/*.html
+reports/*.pdf
+
 # OS
 .DS_Store
 Thumbs.db
