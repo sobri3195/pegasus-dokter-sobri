@@ -181,6 +181,34 @@ Alias for `npm run start:all`.
 npm start
 ```
 
+#### `npm run check`
+Runs the backend connection check script.
+- **Best for**: Verifying backend is running and accessible
+- Checks if backend process is running
+- Tests HTTP health endpoint
+- Shows frontend status if running
+- Returns exit code 0 if OK, 1 if failed
+
+```bash
+npm run check
+```
+
+**Output (when working):**
+```
+🔍 Checking Backend Connection...
+
+✅ Backend process is running
+
+🌐 Testing backend health endpoint...
+✅ Backend is responding (HTTP 200)
+   Response: {"status":"ok","message":"Backend server is running"}
+
+✅ Frontend dev server is running
+   Access at: http://localhost:3000
+
+🎉 Backend connection check complete!
+```
+
 ## 🚀 Quick Start Workflows
 
 ### For Frontend Development

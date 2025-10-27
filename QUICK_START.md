@@ -28,7 +28,7 @@ This will automatically:
 
 **Terminal 1 - Backend Server:**
 ```bash
-npm run scan
+npm run backend
 ```
 
 **Terminal 2 - Frontend:**

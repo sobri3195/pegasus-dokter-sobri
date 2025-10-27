@@ -12,7 +12,8 @@
     "scan:advanced": "python3 backend/advanced_scanner.py",
     "scan:ultimate": "python3 backend/ultimate_scanner.py",
     "start:all": "concurrently \"npm run dev\" \"npm run backend\"",
-    "start": "npm run start:all"
+    "start": "npm run start:all",
+    "check": "./check-connection.sh"
   },
   "dependencies": {
     "cors": "^2.8.5",
