@@ -1,0 +1,39 @@
+[
+  {
+    "url": "https://example.com",
+    "timestamp": "2025-10-27T09:11:13.767169",
+    "status": "Up",
+    "http_status": 200,
+    "vulnerabilities": [
+      {
+        "type": "Missing Security Header",
+        "severity": "Medium",
+        "description": "Header keamanan 'X-Frame-Options' tidak ditemukan"
+      },
+      {
+        "type": "Missing Security Header",
+        "severity": "Medium",
+        "description": "Header keamanan 'X-Content-Type-Options' tidak ditemukan"
+      },
+      {
+        "type": "Missing Security Header",
+        "severity": "High",
+        "description": "Header keamanan 'Strict-Transport-Security' tidak ditemukan"
+      },
+      {
+        "type": "Missing Security Header",
+        "severity": "High",
+        "description": "Header keamanan 'Content-Security-Policy' tidak ditemukan"
+      },
+      {
+        "type": "Missing Security Header",
+        "severity": "Medium",
+        "description": "Header keamanan 'X-XSS-Protection' tidak ditemukan"
+      }
+    ],
+    "open_ports": [
+      80,
+      443
+    ]
+  }
+]
