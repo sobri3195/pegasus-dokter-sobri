@@ -1,0 +1,113 @@
+{
+  "xss_patterns": [
+    "<script>alert\\(",
+    "<script>prompt\\(",
+    "<img src=x onerror=",
+    "javascript:",
+    "onerror=",
+    "onload=",
+    "<iframe",
+    "<object",
+    "<embed"
+  ],
+  "sql_injection_errors": [
+    "SQL syntax.*MySQL",
+    "Warning.*mysql_.*",
+    "valid MySQL result",
+    "MySqlClient\\.",
+    "PostgreSQL.*ERROR",
+    "Warning.*\\Wpg_.*",
+    "valid PostgreSQL result",
+    "Npgsql\\.",
+    "Driver.* SQL[\\-\\_\\ ]*Server",
+    "OLE DB.* SQL Server",
+    "SQLServer JDBC Driver",
+    "SqlClient\\.",
+    "Microsoft SQL Native Client",
+    "\\bORA-\\d{4,}",
+    "Oracle error",
+    "Oracle.*Driver",
+    "Warning.*\\Woci_.*",
+    "Warning.*\\Wora_.*"
+  ],
+  "directory_listing_indicators": [
+    "Index of /",
+    "Directory Listing For",
+    "Parent Directory",
+    "\\[DIR\\]",
+    "\\[TXT\\]",
+    "<title>Index of"
+  ],
+  "common_vulnerabilities": [
+    {
+      "name": "PHP Info Disclosure",
+      "pattern": "phpinfo\\(\\)",
+      "severity": "Medium",
+      "description": "PHP configuration information exposed"
+    },
+    {
+      "name": "Server Version Disclosure",
+      "pattern": "Server: Apache/\\d+\\.\\d+\\.\\d+",
+      "severity": "Low",
+      "description": "Server version information disclosed in headers"
+    },
+    {
+      "name": "Debug Mode Enabled",
+      "pattern": "(DEBUG|TRACE|Error|Exception|Stack trace)",
+      "severity": "Medium",
+      "description": "Debug information or error messages exposed"
+    }
+  ],
+  "sensitive_files": [
+    "/.git/config",
+    "/.env",
+    "/config.php",
+    "/wp-config.php",
+    "/.htaccess",
+    "/web.config",
+    "/phpinfo.php",
+    "/info.php",
+    "/test.php",
+    "/backup.sql",
+    "/database.sql",
+    "/admin.php",
+    "/login.php",
+    "/robots.txt",
+    "/sitemap.xml"
+  ],
+  "common_directories": [
+    "/admin",
+    "/administrator",
+    "/backup",
+    "/test",
+    "/dev",
+    "/old",
+    "/temp",
+    "/tmp",
+    "/api",
+    "/upload",
+    "/uploads",
+    "/images",
+    "/files",
+    "/documents",
+    "/dashboard",
+    "/panel",
+    "/phpmyadmin",
+    "/dbadmin",
+    "/console"
+  ],
+  "xss_test_payloads": [
+    "<script>alert(1)</script>",
+    "<img src=x onerror=alert(1)>",
+    "<svg onload=alert(1)>",
+    "javascript:alert(1)",
+    "<body onload=alert(1)>"
+  ],
+  "sql_test_payloads": [
+    "' OR '1'='1",
+    "' OR 1=1--",
+    "\" OR \"1\"=\"1",
+    "' UNION SELECT NULL--",
+    "1' AND 1=1--"
+  ]
+}

@@ -87,6 +87,126 @@ app.get('/scans', (req, res) => {
   res.json(scans);
 });
 
+app.post('/advanced-scan', async (req, res) => {
+  const { url, config } = req.body;
+
+  if (!url) {
+    return res.status(400).json({ error: 'URL is required' });
+  }
+
+  console.log(`Starting advanced scan for: ${url}`);
+  console.log('Config:', config);
+
+  const configJson = JSON.stringify(config || {});
+  const pythonProcess = spawn('python3', ['backend/advanced_scanner.py', url, configJson]);
+
+  let output = '';
+  let errorOutput = '';
+
+  pythonProcess.stdout.on('data', (data) => {
+    output += data.toString();
+  });
+
+  pythonProcess.stderr.on('data', (data) => {
+    errorOutput += data.toString();
+    console.log('Scanner log:', data.toString());
+  });
+
+  pythonProcess.on('close', (code) => {
+    if (code !== 0) {
+      console.error('Scanner error:', errorOutput);
+      return res.status(500).json({ error: 'Scan failed', details: errorOutput });
+    }
+
+    try {
+      const result = JSON.parse(output);
+      
+      const scans = loadScans();
+      scans.push(result);
+      saveScans(scans);
+
+      console.log('Advanced scan completed successfully');
+      res.json(result);
+    } catch (error) {
+      console.error('Failed to parse scanner output:', error);
+      res.status(500).json({ error: 'Failed to parse scan results', output });
+    }
+  });
+});
+
+app.get('/trends', (req, res) => {
+  const scans = loadScans();
+  
+  // Group scans by date
+  const trends = {};
+  scans.forEach(scan => {
+    const date = new Date(scan.timestamp).toISOString().split('T')[0];
+    if (!trends[date]) {
+      trends[date] = {
+        date,
+        total: 0,
+        critical: 0,
+        high: 0,
+        medium: 0,
+        low: 0,
+        scans: 0
+      };
+    }
+    
+    trends[date].scans += 1;
+    
+    if (scan.vulnerabilities) {
+      trends[date].total += scan.vulnerabilities.length;
+      scan.vulnerabilities.forEach(v => {
+        const severity = v.severity?.toLowerCase() || 'low';
+        if (trends[date][severity] !== undefined) {
+          trends[date][severity] += 1;
+        }
+      });
+    }
+  });
+  
+  res.json(Object.values(trends).sort((a, b) => a.date.localeCompare(b.date)));
+});
+
+app.get('/stats', (req, res) => {
+  const scans = loadScans();
+  
+  const stats = {
+    totalScans: scans.length,
+    totalVulnerabilities: 0,
+    severityCounts: { critical: 0, high: 0, medium: 0, low: 0 },
+    averageRiskScore: 0,
+    recentScans: scans.slice(-10).reverse()
+  };
+  
+  let totalRiskScore = 0;
+  let scansWithRiskScore = 0;
+  
+  scans.forEach(scan => {
+    if (scan.vulnerabilities) {
+      stats.totalVulnerabilities += scan.vulnerabilities.length;
+      scan.vulnerabilities.forEach(v => {
+        const severity = v.severity?.toLowerCase() || 'low';
+        if (stats.severityCounts[severity] !== undefined) {
+          stats.severityCounts[severity] += 1;
+        }
+      });
+    }
+    
+    if (scan.risk_score !== undefined) {
+      totalRiskScore += scan.risk_score;
+      scansWithRiskScore += 1;
+    }
+  });
+  
+  if (scansWithRiskScore > 0) {
+    stats.averageRiskScore = Math.round(totalRiskScore / scansWithRiskScore);
+  }
+  
+  res.json(stats);
+});
+
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
   console.log('Python scanner ready');
