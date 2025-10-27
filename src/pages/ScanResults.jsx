@@ -11,7 +11,7 @@ const ScanResults = () => {
 
   const loadScans = async () => {
     try {
-      const response = await fetch('/data/scans.json')
+      const response = await fetch('/api/scans')
       if (response.ok) {
         const data = await response.json()
         setScans(data.reverse())

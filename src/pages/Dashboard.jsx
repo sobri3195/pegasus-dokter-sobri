@@ -18,7 +18,7 @@ const Dashboard = () => {
 
   const loadStats = async () => {
     try {
-      const response = await fetch('http://localhost:5000/stats')
+      const response = await fetch('/api/stats')
       if (response.ok) {
         const data = await response.json()
         setStats(data)
@@ -30,7 +30,7 @@ const Dashboard = () => {
 
   const loadTrends = async () => {
     try {
-      const response = await fetch('http://localhost:5000/trends')
+      const response = await fetch('/api/trends')
       if (response.ok) {
         const data = await response.json()
         setTrends(data)
