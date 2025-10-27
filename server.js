@@ -16,6 +16,10 @@ app.use(express.json());
 
 const SCANS_FILE = path.join(__dirname, 'data', 'scans.json');
 
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Backend server is running' });
+});
+
 if (!fs.existsSync(path.join(__dirname, 'data'))) {
   fs.mkdirSync(path.join(__dirname, 'data'), { recursive: true });
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const ScanWebsite = () => {
   const [url, setUrl] = useState('')
@@ -6,6 +6,7 @@ const ScanWebsite = () => {
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
   const [advancedMode, setAdvancedMode] = useState(false)
+  const [backendStatus, setBackendStatus] = useState('checking')
   const [scanConfig, setScanConfig] = useState({
     port_scan: true,
     subdomain_enum: false,
@@ -15,8 +16,33 @@ const ScanWebsite = () => {
     use_external_tools: false
   })
 
+  useEffect(() => {
+    checkBackendStatus()
+    const interval = setInterval(checkBackendStatus, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const checkBackendStatus = async () => {
+    try {
+      const response = await fetch('/api/health')
+      if (response.ok) {
+        setBackendStatus('connected')
+      } else {
+        setBackendStatus('disconnected')
+      }
+    } catch (err) {
+      setBackendStatus('disconnected')
+    }
+  }
+
   const handleScan = async (e) => {
     e.preventDefault()
+    
+    if (backendStatus !== 'connected') {
+      setError('Backend server is not running. Please start the backend server with "npm run scan" in a separate terminal.')
+      return
+    }
+
     setLoading(true)
     setError(null)
     setResult(null)
@@ -25,7 +51,7 @@ const ScanWebsite = () => {
       const endpoint = advancedMode ? '/advanced-scan' : '/scan'
       const body = advancedMode ? { url, config: scanConfig } : { url }
       
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
+      const response = await fetch(`/api${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,13 +60,15 @@ const ScanWebsite = () => {
       })
 
       if (!response.ok) {
-        throw new Error('Scan failed')
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Scan failed')
       }
 
       const data = await response.json()
       setResult(data)
     } catch (err) {
-      setError('Failed to scan website. Make sure the backend server is running.')
+      console.error('Scan error:', err)
+      setError(err.message || 'Failed to scan website. Please check the console for more details.')
     } finally {
       setLoading(false)
     }
@@ -75,7 +103,25 @@ const ScanWebsite = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Scan Website</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Scan Website</h1>
+        <div className="flex items-center space-x-2">
+          <div className={`w-3 h-3 rounded-full ${
+            backendStatus === 'connected' ? 'bg-green-500 animate-pulse' : 
+            backendStatus === 'disconnected' ? 'bg-red-500' : 
+            'bg-yellow-500'
+          }`}></div>
+          <span className={`text-sm font-medium ${
+            backendStatus === 'connected' ? 'text-green-600' : 
+            backendStatus === 'disconnected' ? 'text-red-600' : 
+            'text-yellow-600'
+          }`}>
+            {backendStatus === 'connected' ? 'Backend Connected' : 
+             backendStatus === 'disconnected' ? 'Backend Disconnected' : 
+             'Checking Backend...'}
+          </span>
+        </div>
+      </div>
 
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
         <form onSubmit={handleScan}>
