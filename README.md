@@ -200,3 +200,23 @@ Feel free to submit issues and enhancement requests!
 ## 📄 License
 
 MIT License
+
+## 👨‍💻 Author
+
+**Lettu Kes dr. Muhammad Sobri Maulana, S.Kom, CEH, OSCP, OSCE**
+
+- 🌐 GitHub: [github.com/sobri3195](https://github.com/sobri3195)
+- 📧 Email: [muhammadsobrimaulana31@gmail.com](mailto:muhammadsobrimaulana31@gmail.com)
+
+### 💰 Support & Donation
+
+If you find this project useful, please consider supporting the development:
+
+- 💳 Donation: [https://lynk.id/muhsobrimaulana](https://lynk.id/muhsobrimaulana)
+
+### 📱 Connect with Me
+
+- 🎥 YouTube: [Muhammad Sobri Maulana](https://www.youtube.com/@muhammadsobrimaulana6013)
+- 📲 Telegram: [@winlin_exploit](https://t.me/winlin_exploit)
+- 🎬 TikTok: [@dr.sobri](https://www.tiktok.com/@dr.sobri)
+- 💬 WhatsApp Group: [Join Community](https://chat.whatsapp.com/B8nwRZOBMo64GjTwdXV8Bl)
