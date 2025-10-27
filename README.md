@@ -2,6 +2,24 @@
 
 Admin Panel sederhana untuk melakukan scanning vulnerability website menggunakan React.js (Vite + Tailwind) yang terintegrasi dengan Python scanner.
 
+## 🔌 Quick Start - Koneksi Backend
+
+**PENTING:** Backend harus berjalan agar aplikasi berfungsi!
+
+```bash
+# Jalankan semua sekaligus (Recommended)
+npm start
+
+# Cek koneksi backend
+npm run check
+```
+
+📖 **Panduan lengkap:** 
+- [KONEKSI_BACKEND.md](./KONEKSI_BACKEND.md) (Bahasa Indonesia - Lengkap)
+- [BACKEND_CONNECTION.md](./BACKEND_CONNECTION.md) (English - Complete)
+- [CONNECTION_SUMMARY.md](./CONNECTION_SUMMARY.md) (Quick Summary)
+- [BACKEND_STATUS.md](./BACKEND_STATUS.md) (Status & Quick Reference)
+
 ## 🚀 Fitur
 
 ### Core Features:
@@ -175,6 +193,28 @@ npm run scan:ultimate https://example.com '{"active_exploit": true, "crawl_depth
 Aplikasi akan berjalan di:
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:5000
+
+### 3. Verifikasi Koneksi Backend
+
+Setelah menjalankan aplikasi, pastikan backend terhubung:
+
+1. **Cek status di UI:**
+   - Buka http://localhost:3000
+   - Navigasi ke halaman "Scan Website"
+   - Lihat indikator di pojok kanan atas:
+     - 🟢 "Backend Connected" = Terhubung ✅
+     - 🔴 "Backend Disconnected" = Tidak terhubung ❌
+
+2. **Tes backend secara manual:**
+   ```bash
+   curl http://localhost:5000/health
+   ```
+   Response yang benar:
+   ```json
+   {"status":"ok","message":"Backend server is running"}
+   ```
+
+**Troubleshooting:** Jika backend disconnected, lihat [BACKEND_CONNECTION.md](./BACKEND_CONNECTION.md) untuk panduan lengkap.
 
 ## 📖 Cara Penggunaan
 
