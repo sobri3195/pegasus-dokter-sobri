@@ -393,7 +393,175 @@ app.get('/compare/:scanId1/:scanId2', (req, res) => {
   }
 });
 
+// Export scan results endpoint
+app.post('/export', (req, res) => {
+  try {
+    const { scanIds, format } = req.body;
+    const scans = loadScans();
+    
+    let dataToExport;
+    if (scanIds && scanIds.length > 0) {
+      dataToExport = scans.filter(scan => scanIds.includes(scan.id));
+    } else {
+      dataToExport = scans;
+    }
+
+    if (format === 'json') {
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Disposition', 'attachment; filename=scan-results.json');
+      res.json(dataToExport);
+    } else if (format === 'csv') {
+      const csv = convertToCSV(dataToExport);
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename=scan-results.csv');
+      res.send(csv);
+    } else if (format === 'text') {
+      const text = convertToText(dataToExport);
+      res.setHeader('Content-Type', 'text/plain');
+      res.setHeader('Content-Disposition', 'attachment; filename=scan-results.txt');
+      res.send(text);
+    } else {
+      res.status(400).json({ error: 'Invalid format. Use json, csv, or text' });
+    }
+  } catch (error) {
+    console.error('Export error:', error);
+    res.status(500).json({ error: 'Failed to export scan results' });
+  }
+});
+
+// Advanced search/filter endpoint
+app.post('/scans/search', (req, res) => {
+  try {
+    const { query, filters } = req.body;
+    let scans = loadScans();
+
+    // Apply text search
+    if (query) {
+      const searchTerm = query.toLowerCase();
+      scans = scans.filter(scan => 
+        scan.url?.toLowerCase().includes(searchTerm) ||
+        scan.scan_type?.toLowerCase().includes(searchTerm) ||
+        scan.vulnerabilities?.some(v => 
+          v.title?.toLowerCase().includes(searchTerm) ||
+          v.description?.toLowerCase().includes(searchTerm)
+        )
+      );
+    }
+
+    // Apply filters
+    if (filters) {
+      if (filters.scanType) {
+        scans = scans.filter(scan => scan.scan_type === filters.scanType);
+      }
+      
+      if (filters.severity) {
+        scans = scans.filter(scan => 
+          scan.vulnerabilities?.some(v => v.severity === filters.severity)
+        );
+      }
+      
+      if (filters.dateFrom) {
+        scans = scans.filter(scan => new Date(scan.timestamp) >= new Date(filters.dateFrom));
+      }
+      
+      if (filters.dateTo) {
+        scans = scans.filter(scan => new Date(scan.timestamp) <= new Date(filters.dateTo));
+      }
+      
+      if (filters.minRiskScore !== undefined) {
+        scans = scans.filter(scan => scan.risk_score >= filters.minRiskScore);
+      }
+      
+      if (filters.maxRiskScore !== undefined) {
+        scans = scans.filter(scan => scan.risk_score <= filters.maxRiskScore);
+      }
+    }
+
+    // Sort results
+    if (filters?.sortBy) {
+      scans.sort((a, b) => {
+        if (filters.sortBy === 'date') {
+          return filters.sortOrder === 'asc' 
+            ? new Date(a.timestamp) - new Date(b.timestamp)
+            : new Date(b.timestamp) - new Date(a.timestamp);
+        } else if (filters.sortBy === 'risk_score') {
+          return filters.sortOrder === 'asc'
+            ? a.risk_score - b.risk_score
+            : b.risk_score - a.risk_score;
+        }
+        return 0;
+      });
+    }
+
+    res.json({
+      results: scans,
+      total: scans.length,
+      query,
+      filters
+    });
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({ error: 'Failed to search scans' });
+  }
+});
+
+// Helper function to convert scans to CSV
+function convertToCSV(scans) {
+  if (scans.length === 0) return 'No data';
+  
+  const headers = ['ID', 'URL', 'Scan Type', 'Risk Score', 'Vulnerabilities', 'Timestamp'];
+  const rows = scans.map(scan => [
+    scan.id || '',
+    scan.url || '',
+    scan.scan_type || '',
+    scan.risk_score || '',
+    scan.vulnerabilities?.length || 0,
+    scan.timestamp || ''
+  ]);
+  
+  const csvContent = [
+    headers.join(','),
+    ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+  ].join('\n');
+  
+  return csvContent;
+}
+
+// Helper function to convert scans to text
+function convertToText(scans) {
+  if (scans.length === 0) return 'No scan data available';
+  
+  let text = '='.repeat(80) + '\n';
+  text += 'SCAN RESULTS EXPORT\n';
+  text += '='.repeat(80) + '\n\n';
+  
+  scans.forEach((scan, index) => {
+    text += `Scan ${index + 1}:\n`;
+    text += `-`.repeat(80) + '\n';
+    text += `ID:          ${scan.id || 'N/A'}\n`;
+    text += `URL:         ${scan.url || 'N/A'}\n`;
+    text += `Type:        ${scan.scan_type || 'N/A'}\n`;
+    text += `Risk Score:  ${scan.risk_score || 'N/A'}\n`;
+    text += `Timestamp:   ${scan.timestamp || 'N/A'}\n`;
+    text += `Vulnerabilities: ${scan.vulnerabilities?.length || 0}\n`;
+    
+    if (scan.vulnerabilities && scan.vulnerabilities.length > 0) {
+      text += '\nVulnerabilities:\n';
+      scan.vulnerabilities.forEach((vuln, vIndex) => {
+        text += `  ${vIndex + 1}. ${vuln.title || 'Unknown'} (${vuln.severity || 'N/A'})\n`;
+        if (vuln.description) {
+          text += `     ${vuln.description}\n`;
+        }
+      });
+    }
+    text += '\n';
+  });
+  
+  return text;
+}
+
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
   console.log('Python scanner ready');
+  console.log('New features: Export & Advanced Search enabled');
 });
