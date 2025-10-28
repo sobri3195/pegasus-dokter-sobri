@@ -1,0 +1,14 @@
+[
+  {
+    "id": "scheduler-1761686556872",
+    "name": "Test Daily Scan",
+    "url": "https://example.com",
+    "frequency": "daily",
+    "scanType": "basic",
+    "enabled": true,
+    "createdAt": "2025-10-28T21:22:36.872Z",
+    "lastRun": null,
+    "nextRun": "2025-10-29T21:22:36.872Z",
+    "totalRuns": 0
+  }
+]
