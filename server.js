@@ -560,6 +560,168 @@ function convertToText(scans) {
   return text;
 }
 
+// Advanced Search & Filter endpoint
+app.post('/scans/search', (req, res) => {
+  const { query, severity, dateFrom, dateTo, sortBy, sortOrder } = req.body;
+  let scans = loadScans();
+
+  // Filter by search query (URL or description)
+  if (query) {
+    const lowerQuery = query.toLowerCase();
+    scans = scans.filter(scan => 
+      scan.url?.toLowerCase().includes(lowerQuery) ||
+      scan.vulnerabilities?.some(v => 
+        v.description?.toLowerCase().includes(lowerQuery) ||
+        v.type?.toLowerCase().includes(lowerQuery)
+      )
+    );
+  }
+
+  // Filter by severity
+  if (severity && severity !== 'all') {
+    scans = scans.filter(scan =>
+      scan.vulnerabilities?.some(v => 
+        v.severity?.toLowerCase() === severity.toLowerCase()
+      )
+    );
+  }
+
+  // Filter by date range
+  if (dateFrom) {
+    scans = scans.filter(scan => 
+      new Date(scan.timestamp) >= new Date(dateFrom)
+    );
+  }
+
+  if (dateTo) {
+    scans = scans.filter(scan => 
+      new Date(scan.timestamp) <= new Date(dateTo)
+    );
+  }
+
+  // Sort results
+  if (sortBy) {
+    scans.sort((a, b) => {
+      let aValue, bValue;
+
+      switch (sortBy) {
+        case 'date':
+          aValue = new Date(a.timestamp);
+          bValue = new Date(b.timestamp);
+          break;
+        case 'url':
+          aValue = a.url;
+          bValue = b.url;
+          break;
+        case 'vulnerabilities':
+          aValue = a.vulnerabilities?.length || 0;
+          bValue = b.vulnerabilities?.length || 0;
+          break;
+        case 'risk':
+          aValue = a.risk_score || 0;
+          bValue = b.risk_score || 0;
+          break;
+        default:
+          return 0;
+      }
+
+      if (sortOrder === 'desc') {
+        return aValue < bValue ? 1 : -1;
+      } else {
+        return aValue > bValue ? 1 : -1;
+      }
+    });
+  }
+
+  res.json({
+    total: scans.length,
+    scans: scans
+  });
+});
+
+// Bulk export multiple scans
+app.post('/export/bulk', (req, res) => {
+  const { scanIds, format } = req.body;
+  
+  if (!scanIds || !Array.isArray(scanIds) || scanIds.length === 0) {
+    return res.status(400).json({ error: 'Scan IDs array is required' });
+  }
+
+  const scans = loadScans();
+  const selectedScans = scans.filter(scan => scanIds.includes(scan.id));
+
+  if (selectedScans.length === 0) {
+    return res.status(404).json({ error: 'No scans found' });
+  }
+
+  try {
+    switch (format) {
+      case 'json':
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', 'attachment; filename="scans-bulk-export.json"');
+        res.send(JSON.stringify(selectedScans, null, 2));
+        break;
+
+      case 'csv':
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="scans-bulk-export.csv"');
+        
+        let csv = 'Scan ID,URL,Timestamp,Vulnerability Type,Severity,Description,Location\n';
+        selectedScans.forEach(scan => {
+          if (scan.vulnerabilities && scan.vulnerabilities.length > 0) {
+            scan.vulnerabilities.forEach(v => {
+              csv += `"${scan.id}","${scan.url}","${scan.timestamp}","${v.type || ''}","${v.severity || ''}","${v.description || ''}","${v.location || ''}"\n`;
+            });
+          } else {
+            csv += `"${scan.id}","${scan.url}","${scan.timestamp}","No vulnerabilities","","",""\n`;
+          }
+        });
+        res.send(csv);
+        break;
+
+      case 'txt':
+        res.setHeader('Content-Type', 'text/plain');
+        res.setHeader('Content-Disposition', 'attachment; filename="scans-bulk-export.txt"');
+        
+        let txt = `=== BULK VULNERABILITY SCAN REPORT ===\n\n`;
+        txt += `Total Scans: ${selectedScans.length}\n`;
+        txt += `Generated: ${new Date().toISOString()}\n\n`;
+        txt += `${'='.repeat(80)}\n\n`;
+        
+        selectedScans.forEach((scan, index) => {
+          txt += `SCAN ${index + 1}/${selectedScans.length}\n`;
+          txt += `ID: ${scan.id}\n`;
+          txt += `URL: ${scan.url}\n`;
+          txt += `Timestamp: ${scan.timestamp}\n`;
+          txt += `Risk Score: ${scan.risk_score || 'N/A'}\n`;
+          txt += `Total Vulnerabilities: ${scan.vulnerabilities?.length || 0}\n\n`;
+          
+          if (scan.vulnerabilities && scan.vulnerabilities.length > 0) {
+            txt += 'Vulnerabilities:\n';
+            scan.vulnerabilities.forEach((v, vIndex) => {
+              txt += `  ${vIndex + 1}. [${v.severity || 'N/A'}] ${v.type || 'Unknown'}\n`;
+              txt += `     ${v.description || 'No description'}\n`;
+              if (v.location) txt += `     Location: ${v.location}\n`;
+              txt += '\n';
+            });
+          } else {
+            txt += 'No vulnerabilities found.\n\n';
+          }
+          txt += `${'-'.repeat(80)}\n\n`;
+        });
+        
+        res.send(txt);
+        break;
+
+      default:
+        return res.status(400).json({ error: 'Invalid format. Use json, csv, or txt' });
+    }
+  } catch (error) {
+    console.error('Bulk export error:', error);
+    res.status(500).json({ error: 'Failed to export scans' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
   console.log('Python scanner ready');

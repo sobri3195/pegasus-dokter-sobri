@@ -3,6 +3,7 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
     { id: 'dashboard', name: 'Dashboard', icon: '📊' },
     { id: 'scan', name: 'Scan Website', icon: '🔍' },
     { id: 'results', name: 'Hasil Scan', icon: '📋' },
+    { id: 'history', name: 'Advanced Search', icon: '🔎' },
   ]
 
   return (

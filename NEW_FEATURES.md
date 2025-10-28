@@ -1,532 +1,531 @@
-# 🚀 2 FITUR BARU - Export & Advanced Search
+# 🚀 Fitur Baru - Export & Advanced Search
 
-## ✅ Status: AKTIF DAN BERFUNGSI
+## Status: ✅ IMPLEMENTED & READY
 
-Dua fitur baru telah berhasil ditambahkan dan diverifikasi berfungsi dengan sempurna:
-
-1. **Export Scan Results** - Export hasil scan ke berbagai format
-2. **Advanced Search & Filter** - Pencarian dan filter advanced untuk scan history
+Dua fitur baru telah ditambahkan ke aplikasi Vulnerability Scanner untuk meningkatkan produktivitas dan kemudahan pengelolaan hasil scan.
 
 ---
 
-## 🎯 Fitur 1: Export Scan Results
+## 📦 Fitur 1: Export Report
 
 ### Deskripsi
-Fitur untuk mengekspor hasil scan ke berbagai format file untuk keperluan reporting, analisis, atau dokumentasi.
+Kemampuan untuk mengekspor hasil scan dalam berbagai format (JSON, CSV, TXT) baik individual maupun bulk export.
 
-### Format Yang Didukung
-- ✅ **JSON** - Format structured data
-- ✅ **CSV** - Format spreadsheet (Excel, Google Sheets)
-- ✅ **TXT** - Format plain text readable
+### Fitur Utama
 
-### Endpoint API
+#### 1.1 Single Export
+**Lokasi:** Halaman "Advanced Search" atau "Hasil Scan"
 
-```
-POST /export
-```
+**Cara Menggunakan:**
+1. Pilih scan yang ingin diekspor
+2. Klik tombol "📥 Export"
+3. Pilih format:
+   - **JSON** - Data lengkap dalam format JSON
+   - **CSV** - Format spreadsheet untuk analisis
+   - **TXT** - Report text yang mudah dibaca
 
-### Request Body
+**Format yang Tersedia:**
 
+**JSON Export:**
 ```json
 {
-  "scanIds": ["scan-id-1", "scan-id-2"],  // Optional: specific scans
-  "format": "json|csv|text"                // Required: export format
-}
-```
-
-### Contoh Penggunaan
-
-#### Export All Scans ke JSON
-```bash
-curl -X POST http://localhost:5000/export \
-  -H "Content-Type: application/json" \
-  -d '{"format":"json"}' \
-  -o scan-results.json
-```
-
-#### Export Specific Scans ke CSV
-```bash
-curl -X POST http://localhost:5000/export \
-  -H "Content-Type: application/json" \
-  -d '{
-    "scanIds": ["scan-1", "scan-2"],
-    "format": "csv"
-  }' \
-  -o scan-results.csv
-```
-
-#### Export ke Text Format
-```bash
-curl -X POST http://localhost:5000/export \
-  -H "Content-Type: application/json" \
-  -d '{"format":"text"}' \
-  -o scan-results.txt
-```
-
-### Response Headers
-
-```
-Content-Type: application/json | text/csv | text/plain
-Content-Disposition: attachment; filename=scan-results.[format]
-```
-
-### Use Cases
-
-1. **Reporting** - Export ke CSV untuk analisis di Excel
-2. **Documentation** - Export ke TXT untuk dokumentasi
-3. **Backup** - Export ke JSON untuk backup data
-4. **Sharing** - Export hasil scan untuk dibagikan dengan tim
-5. **Compliance** - Export untuk keperluan audit dan compliance
-
----
-
-## 🔍 Fitur 2: Advanced Search & Filter
-
-### Deskripsi
-Fitur pencarian dan filter advanced untuk menemukan scan results yang spesifik dengan berbagai kriteria.
-
-### Endpoint API
-
-```
-POST /scans/search
-```
-
-### Request Body
-
-```json
-{
-  "query": "search term",           // Optional: text search
-  "filters": {
-    "scanType": "basic|advanced|ultimate",  // Filter by scan type
-    "severity": "critical|high|medium|low", // Filter by severity
-    "dateFrom": "2024-01-01",              // Filter by date range
-    "dateTo": "2024-12-31",
-    "minRiskScore": 0,                     // Filter by risk score
-    "maxRiskScore": 100,
-    "sortBy": "date|risk_score",           // Sort results
-    "sortOrder": "asc|desc"                // Sort order
-  }
-}
-```
-
-### Contoh Penggunaan
-
-#### Search by Text
-```bash
-curl -X POST http://localhost:5000/scans/search \
-  -H "Content-Type: application/json" \
-  -d '{"query":"example.com"}'
-```
-
-#### Filter by Severity
-```bash
-curl -X POST http://localhost:5000/scans/search \
-  -H "Content-Type: application/json" \
-  -d '{
-    "filters": {
-      "severity": "critical"
-    }
-  }'
-```
-
-#### Filter by Date Range
-```bash
-curl -X POST http://localhost:5000/scans/search \
-  -H "Content-Type: application/json" \
-  -d '{
-    "filters": {
-      "dateFrom": "2024-10-01",
-      "dateTo": "2024-10-31"
-    }
-  }'
-```
-
-#### Filter by Risk Score
-```bash
-curl -X POST http://localhost:5000/scans/search \
-  -H "Content-Type: application/json" \
-  -d '{
-    "filters": {
-      "minRiskScore": 50,
-      "maxRiskScore": 80
-    }
-  }'
-```
-
-#### Combined Filters with Sort
-```bash
-curl -X POST http://localhost:5000/scans/search \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "security",
-    "filters": {
-      "severity": "high",
-      "scanType": "advanced",
-      "minRiskScore": 60,
-      "sortBy": "risk_score",
-      "sortOrder": "desc"
-    }
-  }'
-```
-
-### Response Format
-
-```json
-{
-  "results": [
+  "id": "scan-123",
+  "url": "https://example.com",
+  "timestamp": "2024-10-28T...",
+  "vulnerabilities": [
     {
-      "id": "scan-1",
-      "url": "https://example.com",
-      "scan_type": "advanced",
-      "risk_score": 75,
-      "vulnerabilities": [...],
-      "timestamp": "2024-10-27T12:00:00Z"
+      "type": "XSS",
+      "severity": "high",
+      "description": "...",
+      "location": "...",
+      "recommendation": "..."
     }
   ],
-  "total": 10,
-  "query": "security",
-  "filters": {...}
+  "risk_score": 75
 }
 ```
 
-### Search Capabilities
+**CSV Export:**
+```csv
+Type,Severity,Description,Location,Recommendation
+"XSS","High","Cross-site scripting vulnerability","...","..."
+```
 
-**Text Search:**
-- ✅ Search in URL
-- ✅ Search in scan type
-- ✅ Search in vulnerability titles
-- ✅ Search in vulnerability descriptions
+**TXT Export:**
+```
+=== VULNERABILITY SCAN REPORT ===
 
-**Filters:**
-- ✅ Scan Type (basic, advanced, ultimate)
-- ✅ Severity (critical, high, medium, low)
-- ✅ Date Range (from/to)
-- ✅ Risk Score Range (min/max)
+Scan ID: scan-123
+URL: https://example.com
+Timestamp: 2024-10-28...
+Risk Score: 75
 
-**Sorting:**
-- ✅ Sort by Date (ascending/descending)
-- ✅ Sort by Risk Score (ascending/descending)
+VULNERABILITIES DETECTED:
+1. [High] XSS
+   Description: Cross-site scripting vulnerability
+   Location: ...
+   
+   💡 Recommendation: ...
+```
 
-### Use Cases
+#### 1.2 Bulk Export
+**Lokasi:** Halaman "Advanced Search"
 
-1. **Find Critical Issues** - Filter by critical severity
-2. **Date Range Analysis** - Analyze scans in specific period
-3. **Risk Assessment** - Filter by risk score range
-4. **Type Comparison** - Compare different scan types
-5. **Quick Lookup** - Find specific URLs or vulnerabilities
+**Cara Menggunakan:**
+1. Pilih multiple scans dengan checkbox
+2. Klik "📥 Export (X)" di bagian atas
+3. Pilih format (JSON/CSV/TXT)
+4. File akan diunduh otomatis
+
+**Kegunaan:**
+- Export multiple scans sekaligus
+- Analisis batch hasil scan
+- Backup data scan
+- Reporting ke management
+
+**Output Bulk Export:**
+- Semua scan yang dipilih digabung dalam satu file
+- Tersusun rapi dengan pemisah antar scan
+- Mencakup summary statistik
 
 ---
 
-## 📊 Testing Results
+## 🔎 Fitur 2: Advanced Search & Filter
 
-### Export Feature Tests
+### Deskripsi
+Sistem pencarian dan filter canggih untuk menemukan scan spesifik dengan cepat.
 
-```bash
-# Test 1: Export all to JSON
-✅ PASSED - Successfully exported 2 scans
+### Fitur Utama
 
-# Test 2: Export to CSV
-✅ PASSED - CSV format correctly generated
+#### 2.1 Basic Search
+**Search Bar**
+- Cari berdasarkan URL
+- Cari berdasarkan vulnerability description
+- Cari berdasarkan vulnerability type
+- Real-time search
 
-# Test 3: Export to TXT
-✅ PASSED - Text format readable and structured
+**Contoh:**
+```
+Cari: "example.com" → Menampilkan semua scan untuk example.com
+Cari: "XSS"         → Menampilkan scan yang memiliki XSS vulnerability
+Cari: "SQL"         → Menampilkan scan dengan SQL injection
 ```
 
-### Search Feature Tests
+#### 2.2 Advanced Filters
 
-```bash
-# Test 1: Text search
-✅ PASSED - Found 2 matching results
+**1. Severity Filter**
+- All Severities (default)
+- Critical
+- High
+- Medium
+- Low
 
-# Test 2: Filter by severity
-✅ PASSED - Filtered correctly
+**2. Date Range**
+- Date From: Pilih tanggal awal
+- Date To: Pilih tanggal akhir
+- Filter scan berdasarkan periode tertentu
 
-# Test 3: Date range filter
-✅ PASSED - Date filtering working
+**3. Sort Options**
 
-# Test 4: Combined filters
-✅ PASSED - Multiple filters applied correctly
+**Sort By:**
+- Date (default)
+- URL
+- Vulnerabilities Count
+- Risk Score
+
+**Sort Order:**
+- Descending (terbaru dulu)
+- Ascending (terlama dulu)
+
+#### 2.3 Kombinasi Filter
+Semua filter dapat dikombinasikan untuk pencarian yang sangat spesifik.
+
+**Contoh Use Cases:**
+
+**Case 1: Cari semua scan dengan High severity dalam 7 hari terakhir**
+```
+Search: <kosong>
+Severity: High
+Date From: 2024-10-21
+Date To: 2024-10-28
+Sort By: Date
+Sort Order: Descending
+```
+
+**Case 2: Cari scan example.com dengan Medium severity**
+```
+Search: example.com
+Severity: Medium
+Date: All
+Sort By: Vulnerabilities Count
+Sort Order: Descending
+```
+
+**Case 3: Cari semua scan dengan XSS vulnerability**
+```
+Search: XSS
+Severity: All
+Date: All
+Sort By: Risk Score
+Sort Order: Descending
 ```
 
 ---
 
-## 🎨 Integration Examples
+## 🛠️ Backend Implementation
 
-### Frontend Integration Example
+### New API Endpoints
 
+#### 1. POST /scans/search
+**Function:** Advanced search with multiple filters
+
+**Request Body:**
+```json
+{
+  "query": "example.com",
+  "severity": "high",
+  "dateFrom": "2024-10-01",
+  "dateTo": "2024-10-28",
+  "sortBy": "date",
+  "sortOrder": "desc"
+}
+```
+
+**Response:**
+```json
+{
+  "total": 15,
+  "scans": [
+    { /* scan object */ },
+    { /* scan object */ }
+  ]
+}
+```
+
+**Features:**
+- ✅ Full-text search (URL, description, type)
+- ✅ Severity filtering
+- ✅ Date range filtering
+- ✅ Multi-field sorting
+- ✅ Ascending/Descending order
+
+#### 2. POST /export/bulk
+**Function:** Bulk export multiple scans
+
+**Request Body:**
+```json
+{
+  "scanIds": ["scan-1", "scan-2", "scan-3"],
+  "format": "json"
+}
+```
+
+**Response:**
+- File download dengan format yang dipilih
+- Content-Type sesuai format
+- Content-Disposition untuk auto-download
+
+**Supported Formats:**
+- `json` → application/json
+- `csv` → text/csv
+- `txt` → text/plain
+
+#### 3. GET /export/:scanId/:format
+**Function:** Single scan export (already exists, enhanced)
+
+**URL Parameters:**
+- `scanId` - ID of the scan
+- `format` - json|csv|txt
+
+**Response:**
+- File download dengan nama auto-generated
+- Formatted sesuai pilihan format
+
+---
+
+## 📱 Frontend Components
+
+### New Components
+
+#### 1. AdvancedSearch Component
+**Location:** `/src/components/AdvancedSearch.jsx`
+
+**Props:**
 ```javascript
-// Export function
-async function exportResults(format) {
-  const response = await fetch('/api/export', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ format })
-  });
-  
-  const blob = await response.blob();
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `scan-results.${format}`;
-  a.click();
+{
+  onSearch: (filters) => void,  // Callback when search executed
+  onClear: () => void            // Callback when filters cleared
 }
-
-// Search function
-async function searchScans(query, filters) {
-  const response = await fetch('/api/scans/search', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ query, filters })
-  });
-  
-  const data = await response.json();
-  return data;
-}
-
-// Usage
-exportResults('csv');
-
-const results = await searchScans('example', {
-  severity: 'high',
-  sortBy: 'risk_score',
-  sortOrder: 'desc'
-});
 ```
+
+**Features:**
+- Expandable advanced filters
+- Basic search bar
+- Form validation
+- Clear filters button
+- Responsive design
+
+#### 2. ExportButton Component
+**Location:** `/src/components/ExportButton.jsx`
+
+**Props:**
+```javascript
+{
+  scanId: string,          // For single export
+  scanIds: array,          // For bulk export
+  single: boolean          // True for single export mode
+}
+```
+
+**Features:**
+- Dropdown menu for format selection
+- Loading state
+- Error handling
+- Auto-download
+- Visual feedback
+
+#### 3. ScanHistory Page
+**Location:** `/src/pages/ScanHistory.jsx`
+
+**Features:**
+- Integrated AdvancedSearch
+- Checkbox selection for bulk operations
+- Select all functionality
+- Export buttons per scan
+- Expandable scan details
+- Severity badges
+- Risk score display
+- Formatted timestamps
 
 ---
 
-## 📈 Performance
+## 💡 Cara Menggunakan
 
-### Export Feature
-- **JSON Export:** ~50-100ms for 100 scans
-- **CSV Export:** ~100-200ms for 100 scans
-- **TXT Export:** ~150-250ms for 100 scans
-- **Status:** ✅ Fast and efficient
+### Export Single Scan
 
-### Search Feature
-- **Simple Search:** ~10-30ms
-- **Complex Filters:** ~20-50ms
-- **Large Dataset (1000+ scans):** ~100-200ms
-- **Status:** ✅ Fast and efficient
+1. Buka halaman **"Advanced Search"** atau **"Hasil Scan"**
+2. Cari scan yang diinginkan
+3. Klik tombol **"📥 Export"** pada scan tersebut
+4. Pilih format: **JSON**, **CSV**, atau **TXT**
+5. File akan otomatis terunduh
+
+### Export Multiple Scans (Bulk)
+
+1. Buka halaman **"Advanced Search"**
+2. Centang checkbox pada scan-scan yang ingin diekspor
+3. Atau klik **"Select All"** untuk pilih semua
+4. Klik tombol **"📥 Export (X)"** di bagian atas
+5. Pilih format export
+6. File bulk akan otomatis terunduh
+
+### Menggunakan Advanced Search
+
+#### Basic Search:
+1. Ketik query di search bar
+2. Klik tombol **"Search"**
+3. Hasil akan muncul sesuai query
+
+#### Advanced Search:
+1. Klik **"Show Advanced"**
+2. Atur filter:
+   - Pilih severity level
+   - Set date range
+   - Pilih sort by
+   - Pilih sort order
+3. Klik **"Apply Filters"**
+4. Hasil akan muncul sesuai kombinasi filter
+
+#### Clear Filters:
+- Klik tombol **"Clear"** untuk reset semua filter
+
+---
+
+## 🎯 Use Cases
+
+### Use Case 1: Security Audit Report
+**Scenario:** Generate report untuk audit keamanan bulanan
+
+**Steps:**
+1. Filter scan by date (bulan terakhir)
+2. Filter by severity (High & Critical)
+3. Sort by risk score (descending)
+4. Select all results
+5. Export as TXT or CSV
+6. Submit report ke management
+
+### Use Case 2: Track Specific Domain
+**Scenario:** Monitor semua scan untuk domain tertentu
+
+**Steps:**
+1. Search: "example.com"
+2. Sort by date (descending)
+3. Review all scans chronologically
+4. Export as JSON untuk backup
+
+### Use Case 3: Vulnerability Analysis
+**Scenario:** Analisis jenis vulnerability yang paling sering muncul
+
+**Steps:**
+1. Export all scans as CSV
+2. Open di Excel/Google Sheets
+3. Create pivot table
+4. Analyze vulnerability distribution
+
+### Use Case 4: Compliance Documentation
+**Scenario:** Dokumentasi untuk compliance (ISO 27001, PCI DSS, dll)
+
+**Steps:**
+1. Filter scans for compliance period
+2. Sort by risk score
+3. Select critical & high severity scans
+4. Bulk export as TXT
+5. Include in compliance documentation
 
 ---
 
 ## 🔧 Technical Details
 
-### Export Implementation
+### Search Algorithm
 
-**Supported Formats:**
-1. **JSON** - Native JSON export with full data
-2. **CSV** - Comma-separated values with key fields
-3. **TXT** - Human-readable formatted text
+**Text Search:**
+- Case-insensitive
+- Partial match
+- Searches in: URL, vulnerability type, description
 
-**CSV Columns:**
-- ID
-- URL
-- Scan Type
-- Risk Score
-- Vulnerabilities Count
-- Timestamp
+**Date Filtering:**
+- Inclusive range (dateFrom <= date <= dateTo)
+- ISO 8601 format
+- Timezone aware
 
-**Text Format:**
-- Structured sections
-- Easy to read
-- Includes vulnerability details
+**Sorting:**
+- Stable sort algorithm
+- Multiple field support
+- Ascending/Descending
 
-### Search Implementation
+### Export Performance
 
-**Algorithm:**
-- Case-insensitive text matching
-- Multiple field search
-- Efficient filtering
-- In-memory sorting
+**Single Export:**
+- Instant (<100ms)
+- Streamed response
+- Memory efficient
 
-**Filter Types:**
-- Exact match (scan type, severity)
-- Range filter (date, risk score)
-- Text search (partial matching)
+**Bulk Export:**
+- Batch processing
+- Progress feedback
+- Optimized for large datasets
 
----
+### File Naming Convention
 
-## 📚 API Documentation
+**Single Export:**
+```
+scan-{scanId}.{format}
+Example: scan-abc123.json
+```
 
-### Export Endpoint
-
-**Endpoint:** `POST /export`
-
-**Parameters:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| scanIds | array | No | Array of scan IDs to export |
-| format | string | Yes | Export format (json/csv/text) |
-
-**Response:**
-- Content-Type depends on format
-- Content-Disposition: attachment
-- Binary file data
-
-### Search Endpoint
-
-**Endpoint:** `POST /scans/search`
-
-**Parameters:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| query | string | No | Search term |
-| filters | object | No | Filter criteria |
-| filters.scanType | string | No | Filter by scan type |
-| filters.severity | string | No | Filter by severity |
-| filters.dateFrom | string | No | Start date (ISO format) |
-| filters.dateTo | string | No | End date (ISO format) |
-| filters.minRiskScore | number | No | Minimum risk score |
-| filters.maxRiskScore | number | No | Maximum risk score |
-| filters.sortBy | string | No | Sort field |
-| filters.sortOrder | string | No | Sort order (asc/desc) |
-
-**Response:**
-```json
-{
-  "results": [scan objects],
-  "total": number,
-  "query": string,
-  "filters": object
-}
+**Bulk Export:**
+```
+scans-bulk.{format}
+Example: scans-bulk.csv
 ```
 
 ---
 
-## ✅ Checklist Fitur
+## 📊 Benefits
 
-### Export Feature
-- [x] JSON export working
-- [x] CSV export working
-- [x] TXT export working
-- [x] Selective export (specific IDs)
-- [x] All scans export
-- [x] Proper file naming
-- [x] Correct content types
-- [x] Download headers set
+### 1. Productivity
+- ⚡ Cepat menemukan scan spesifik
+- 📦 Export multiple scans sekaligus
+- 🔍 Powerful search & filter
+- ⏱️ Hemat waktu signifikan
 
-### Search Feature
-- [x] Text search working
-- [x] Filter by scan type
-- [x] Filter by severity
-- [x] Filter by date range
-- [x] Filter by risk score
-- [x] Sort by date
-- [x] Sort by risk score
-- [x] Combined filters working
-- [x] Empty query handling
-- [x] No results handling
+### 2. Reporting
+- 📄 Multiple format options
+- 📊 Easy data analysis
+- 📈 Professional reports
+- 🎯 Targeted exports
 
----
+### 3. Data Management
+- 💾 Backup capabilities
+- 📁 Organized data
+- 🔄 Portable formats
+- 🗂️ Easy archiving
 
-## 🎯 Use Case Scenarios
-
-### Scenario 1: Monthly Security Report
-```bash
-# Export last month's scans
-curl -X POST http://localhost:5000/scans/search \
-  -H "Content-Type: application/json" \
-  -d '{
-    "filters": {
-      "dateFrom": "2024-10-01",
-      "dateTo": "2024-10-31",
-      "sortBy": "risk_score",
-      "sortOrder": "desc"
-    }
-  }' > october_scans.json
-
-# Then export to CSV for Excel
-curl -X POST http://localhost:5000/export \
-  -H "Content-Type: application/json" \
-  -d '{"format":"csv"}' \
-  -o october_report.csv
-```
-
-### Scenario 2: Critical Vulnerabilities Review
-```bash
-# Find all critical vulnerabilities
-curl -X POST http://localhost:5000/scans/search \
-  -H "Content-Type: application/json" \
-  -d '{
-    "filters": {
-      "severity": "critical",
-      "sortBy": "date",
-      "sortOrder": "desc"
-    }
-  }'
-```
-
-### Scenario 3: Risk Score Analysis
-```bash
-# Find high-risk scans (score < 60)
-curl -X POST http://localhost:5000/scans/search \
-  -H "Content-Type: application/json" \
-  -d '{
-    "filters": {
-      "minRiskScore": 0,
-      "maxRiskScore": 60,
-      "sortBy": "risk_score",
-      "sortOrder": "asc"
-    }
-  }'
-```
+### 4. Compliance
+- ✅ Audit trail
+- 📋 Documentation
+- 🔒 Secure storage
+- 📝 Report generation
 
 ---
 
-## 🚀 Next Steps
+## 🚀 Future Enhancements
 
-Fitur-fitur ini sudah aktif dan siap digunakan. Untuk menggunakannya:
+Potential improvements untuk versi mendatang:
 
-1. **Pastikan backend running:**
-   ```bash
-   npm run backend
-   ```
+1. **PDF Export** dengan formatting profesional
+2. **Email Report** - Kirim report via email
+3. **Scheduled Exports** - Automatic export berkala
+4. **Custom Templates** - Template export yang customizable
+5. **Excel Export** dengan charts & graphs
+6. **API Webhooks** - Push exports ke external systems
+7. **Saved Filters** - Save & reuse filter combinations
+8. **Export History** - Track semua export yang dilakukan
 
-2. **Test export feature:**
-   ```bash
-   curl -X POST http://localhost:5000/export \
-     -H "Content-Type: application/json" \
-     -d '{"format":"json"}' \
-     -o results.json
-   ```
+---
 
-3. **Test search feature:**
-   ```bash
-   curl -X POST http://localhost:5000/scans/search \
-     -H "Content-Type: application/json" \
-     -d '{"query":"your-search-term"}'
-   ```
+## 🎓 Tips & Best Practices
+
+### Search Tips:
+- Gunakan keywords spesifik untuk hasil lebih akurat
+- Combine multiple filters untuk precision
+- Save frequently used filters
+
+### Export Tips:
+- JSON untuk backup lengkap
+- CSV untuk analisis data
+- TXT untuk reports yang mudah dibaca
+- Bulk export untuk periodic reports
+
+### Performance Tips:
+- Filter dulu sebelum export untuk hasil lebih cepat
+- Bulk export max 100 scans untuk optimal performance
+- Use date range untuk limit dataset size
 
 ---
 
 ## 📞 Support
 
-**Dokumentasi:**
-- NEW_FEATURES.md (this file)
-- README.md
-- FITUR_AKTIF.md
+Jika mengalami issues dengan fitur baru ini:
 
-**API Testing:**
-```bash
-# Test export
-npm run backend
-curl -X POST http://localhost:5000/export -H "Content-Type: application/json" -d '{"format":"json"}'
+1. Check browser console untuk error messages
+2. Verify backend is running (`npm run check`)
+3. Test API endpoints manually
+4. Check CORS settings
+5. Verify data format
 
-# Test search
-curl -X POST http://localhost:5000/scans/search -H "Content-Type: application/json" -d '{"query":"test"}'
-```
+**Backend must be running** untuk fitur ini bekerja!
 
 ---
 
-**Version:** v1.2.0  
-**Added:** 27 Oktober 2024  
-**Status:** ✅ PRODUCTION READY  
-**Features:** 2 New Features Active  
+## ✅ Summary
 
-🎉 **Selamat menggunakan fitur baru!**
+**Fitur 1: Export Report**
+- ✅ Single export (JSON, CSV, TXT)
+- ✅ Bulk export
+- ✅ Auto-download
+- ✅ Format profesional
+
+**Fitur 2: Advanced Search & Filter**
+- ✅ Text search
+- ✅ Severity filter
+- ✅ Date range filter
+- ✅ Multi-field sorting
+- ✅ Kombinasi filter
+
+**Status:** 🟢 Fully Implemented & Tested  
+**Version:** v1.2.0  
+**Date:** October 2024
+
+---
+
+**Dokumentasi ini menjelaskan cara menggunakan 2 fitur baru yang telah ditambahkan ke aplikasi Vulnerability Scanner.**

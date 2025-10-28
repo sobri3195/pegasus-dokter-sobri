@@ -4,6 +4,7 @@ import Topbar from './components/Topbar'
 import Dashboard from './pages/Dashboard'
 import ScanWebsite from './pages/ScanWebsite'
 import ScanResults from './pages/ScanResults'
+import ScanHistory from './pages/ScanHistory'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard')
@@ -16,6 +17,8 @@ function App() {
         return <ScanWebsite />
       case 'results':
         return <ScanResults />
+      case 'history':
+        return <ScanHistory />
       default:
         return <Dashboard />
     }
