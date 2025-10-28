@@ -259,6 +259,140 @@ app.post('/ultimate-scan', async (req, res) => {
   });
 });
 
+// Export scan results endpoint
+app.get('/export/:scanId/:format', (req, res) => {
+  const { scanId, format } = req.params;
+  const scans = loadScans();
+  const scan = scans.find(s => s.id === scanId);
+
+  if (!scan) {
+    return res.status(404).json({ error: 'Scan not found' });
+  }
+
+  try {
+    switch (format) {
+      case 'json':
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', `attachment; filename="scan-${scanId}.json"`);
+        res.send(JSON.stringify(scan, null, 2));
+        break;
+
+      case 'csv':
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', `attachment; filename="scan-${scanId}.csv"`);
+        
+        let csv = 'Type,Severity,Description,Location,Recommendation\n';
+        if (scan.vulnerabilities) {
+          scan.vulnerabilities.forEach(v => {
+            csv += `"${v.type || ''}","${v.severity || ''}","${v.description || ''}","${v.location || ''}","${v.recommendation || ''}"\n`;
+          });
+        }
+        res.send(csv);
+        break;
+
+      case 'txt':
+        res.setHeader('Content-Type', 'text/plain');
+        res.setHeader('Content-Disposition', `attachment; filename="scan-${scanId}.txt"`);
+        
+        let txt = `=== VULNERABILITY SCAN REPORT ===\n\n`;
+        txt += `Scan ID: ${scan.id}\n`;
+        txt += `URL: ${scan.url}\n`;
+        txt += `Timestamp: ${scan.timestamp}\n`;
+        txt += `Risk Score: ${scan.risk_score || 'N/A'}\n`;
+        txt += `Total Vulnerabilities: ${scan.vulnerabilities ? scan.vulnerabilities.length : 0}\n\n`;
+        
+        if (scan.vulnerabilities && scan.vulnerabilities.length > 0) {
+          txt += `=== VULNERABILITIES ===\n\n`;
+          scan.vulnerabilities.forEach((v, i) => {
+            txt += `${i + 1}. ${v.type || 'Unknown'}\n`;
+            txt += `   Severity: ${v.severity || 'N/A'}\n`;
+            txt += `   Description: ${v.description || 'N/A'}\n`;
+            txt += `   Location: ${v.location || 'N/A'}\n`;
+            txt += `   Recommendation: ${v.recommendation || 'N/A'}\n\n`;
+          });
+        }
+        res.send(txt);
+        break;
+
+      default:
+        res.status(400).json({ error: 'Invalid format. Use json, csv, or txt' });
+    }
+  } catch (error) {
+    console.error('Export error:', error);
+    res.status(500).json({ error: 'Failed to export scan results' });
+  }
+});
+
+// Compare two scans endpoint
+app.get('/compare/:scanId1/:scanId2', (req, res) => {
+  const { scanId1, scanId2 } = req.params;
+  const scans = loadScans();
+  
+  const scan1 = scans.find(s => s.id === scanId1);
+  const scan2 = scans.find(s => s.id === scanId2);
+
+  if (!scan1 || !scan2) {
+    return res.status(404).json({ error: 'One or both scans not found' });
+  }
+
+  try {
+    const comparison = {
+      scan1: {
+        id: scan1.id,
+        url: scan1.url,
+        timestamp: scan1.timestamp,
+        risk_score: scan1.risk_score || 0,
+        vulnerability_count: scan1.vulnerabilities ? scan1.vulnerabilities.length : 0
+      },
+      scan2: {
+        id: scan2.id,
+        url: scan2.url,
+        timestamp: scan2.timestamp,
+        risk_score: scan2.risk_score || 0,
+        vulnerability_count: scan2.vulnerabilities ? scan2.vulnerabilities.length : 0
+      },
+      differences: {
+        risk_score_change: (scan2.risk_score || 0) - (scan1.risk_score || 0),
+        vulnerability_count_change: (scan2.vulnerabilities ? scan2.vulnerabilities.length : 0) - (scan1.vulnerabilities ? scan1.vulnerabilities.length : 0)
+      }
+    };
+
+    // Find new vulnerabilities (in scan2 but not in scan1)
+    const vulns1 = scan1.vulnerabilities || [];
+    const vulns2 = scan2.vulnerabilities || [];
+    
+    const newVulnerabilities = vulns2.filter(v2 => 
+      !vulns1.some(v1 => v1.type === v2.type && v1.location === v2.location)
+    );
+    
+    // Find fixed vulnerabilities (in scan1 but not in scan2)
+    const fixedVulnerabilities = vulns1.filter(v1 => 
+      !vulns2.some(v2 => v2.type === v1.type && v2.location === v1.location)
+    );
+    
+    // Find common vulnerabilities
+    const commonVulnerabilities = vulns1.filter(v1 => 
+      vulns2.some(v2 => v2.type === v1.type && v2.location === v1.location)
+    );
+
+    comparison.new_vulnerabilities = newVulnerabilities;
+    comparison.fixed_vulnerabilities = fixedVulnerabilities;
+    comparison.common_vulnerabilities = commonVulnerabilities;
+    comparison.summary = {
+      new_count: newVulnerabilities.length,
+      fixed_count: fixedVulnerabilities.length,
+      common_count: commonVulnerabilities.length,
+      status: newVulnerabilities.length > 0 ? 'deteriorated' : 
+              fixedVulnerabilities.length > 0 ? 'improved' : 'unchanged'
+    };
+
+    res.json(comparison);
+  } catch (error) {
+    console.error('Comparison error:', error);
+    res.status(500).json({ error: 'Failed to compare scans' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
   console.log('Python scanner ready');
