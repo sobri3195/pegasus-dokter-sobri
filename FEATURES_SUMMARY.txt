@@ -1,0 +1,215 @@
+═══════════════════════════════════════════════════════════════════════════
+  🚀  2 FITUR BARU TELAH DITAMBAHKAN  🚀
+═══════════════════════════════════════════════════════════════════════════
+
+  STATUS: ✅ IMPLEMENTED, TESTED & READY TO USE
+
+═══════════════════════════════════════════════════════════════════════════
+
+  📦 FITUR 1: EXPORT REPORT
+  ─────────────────────────────────────────────────────────────────────
+
+  ✅ Single Export
+     - Export hasil scan individual
+     - Format: JSON, CSV, TXT
+     - Auto-download
+     
+  ✅ Bulk Export  
+     - Export multiple scans sekaligus
+     - Pilih scan dengan checkbox
+     - Select all functionality
+     - Format: JSON, CSV, TXT
+
+  Cara Menggunakan:
+  1. Buka halaman "Advanced Search"
+  2. Pilih scan (centang checkbox)
+  3. Klik tombol "📥 Export"
+  4. Pilih format
+  5. File otomatis terunduh!
+
+═══════════════════════════════════════════════════════════════════════════
+
+  🔎 FITUR 2: ADVANCED SEARCH & FILTER
+  ─────────────────────────────────────────────────────────────────────
+
+  ✅ Basic Search
+     - Cari berdasarkan URL
+     - Cari berdasarkan vulnerability description
+     - Cari berdasarkan vulnerability type
+     
+  ✅ Advanced Filters
+     - Severity: Critical, High, Medium, Low
+     - Date Range: From - To
+     - Sort By: Date, URL, Vulnerabilities, Risk Score
+     - Sort Order: Ascending / Descending
+     
+  ✅ Kombinasi Filter
+     - Semua filter dapat dikombinasikan
+     - Pencarian sangat spesifik
+     - Results real-time
+
+  Cara Menggunakan:
+  1. Buka halaman "Advanced Search" (menu sidebar)
+  2. Ketik query di search bar (optional)
+  3. Klik "Show Advanced" untuk filter tambahan
+  4. Atur filter sesuai kebutuhan
+  5. Klik "Apply Filters"
+  6. Hasil muncul sesuai kriteria!
+
+═══════════════════════════════════════════════════════════════════════════
+
+  🛠️ TECHNICAL DETAILS
+  
+  Backend Endpoints:
+  ├─ POST /scans/search         Advanced search & filter
+  └─ POST /export/bulk          Bulk export multiple scans
+  
+  Frontend Components:
+  ├─ ExportButton.jsx           Export functionality
+  ├─ AdvancedSearch.jsx         Search & filter UI
+  └─ ScanHistory.jsx            New page with all features
+  
+  Sidebar Menu:
+  └─ New menu: "Advanced Search" (🔎 icon)
+
+═══════════════════════════════════════════════════════════════════════════
+
+  📊 USE CASES
+
+  1. Security Audit Report
+     → Filter by date range + severity
+     → Export as TXT/CSV
+     → Submit to management
+
+  2. Track Specific Domain
+     → Search by domain name
+     → Sort by date
+     → Export as JSON for backup
+
+  3. Vulnerability Analysis
+     → Export all as CSV
+     → Analyze in Excel/Sheets
+     → Create charts & reports
+
+  4. Compliance Documentation
+     → Filter by compliance period
+     → Select critical/high severity
+     → Bulk export as TXT
+     → Include in audit docs
+
+═══════════════════════════════════════════════════════════════════════════
+
+  ✨ BENEFITS
+
+  Productivity:
+  ⚡ Cepat menemukan scan spesifik
+  📦 Export multiple scans sekaligus
+  🔍 Powerful search capabilities
+  ⏱️ Hemat waktu signifikan
+
+  Reporting:
+  📄 Multiple format options (JSON/CSV/TXT)
+  📊 Easy data analysis
+  📈 Professional reports
+  🎯 Targeted exports
+
+  Data Management:
+  💾 Backup capabilities
+  📁 Organized data
+  🔄 Portable formats
+  🗂️ Easy archiving
+
+═══════════════════════════════════════════════════════════════════════════
+
+  🎯 QUICK GUIDE
+
+  Export Single Scan:
+  1. Klik "📥 Export" pada scan
+  2. Pilih format
+  3. Done!
+
+  Export Multiple Scans:
+  1. Centang scans yang diinginkan
+  2. Klik "📥 Export (X)" di atas
+  3. Pilih format
+  4. Done!
+
+  Search & Filter:
+  1. Buka "Advanced Search" page
+  2. Gunakan search bar atau filters
+  3. Klik "Apply Filters"
+  4. Results appear!
+
+═══════════════════════════════════════════════════════════════════════════
+
+  📖 DOKUMENTASI LENGKAP
+  
+  Lihat file berikut untuk detail:
+  → NEW_FEATURES.md         Dokumentasi lengkap fitur baru
+  → README.md               Panduan umum aplikasi
+  
+═══════════════════════════════════════════════════════════════════════════
+
+  🌐 ACCESS
+
+  Frontend:  http://localhost:3000
+  Backend:   http://localhost:5000
+  
+  New Menu:  "Advanced Search" (sidebar)
+
+═══════════════════════════════════════════════════════════════════════════
+
+  ✅ CHECKLIST FITUR
+
+  Export Report:
+  [✓] Single export (JSON)
+  [✓] Single export (CSV)
+  [✓] Single export (TXT)
+  [✓] Bulk export (JSON)
+  [✓] Bulk export (CSV)
+  [✓] Bulk export (TXT)
+  [✓] Auto-download
+  [✓] Format profesional
+
+  Advanced Search:
+  [✓] Basic text search
+  [✓] Severity filter
+  [✓] Date range filter
+  [✓] Multi-field sorting
+  [✓] Sort order (asc/desc)
+  [✓] Kombinasi filter
+  [✓] Clear filters button
+  [✓] Real-time results
+
+  UI/UX:
+  [✓] Export button component
+  [✓] Search component
+  [✓] New page (ScanHistory)
+  [✓] Sidebar menu updated
+  [✓] Checkbox selection
+  [✓] Select all function
+  [✓] Loading states
+  [✓] Error handling
+
+═══════════════════════════════════════════════════════════════════════════
+
+  🎉 STATUS: READY FOR PRODUCTION!
+
+  Version:      v1.2.0
+  Branch:       feature-export-and-filter
+  Date:         October 2024
+  
+  All tests:    ✅ PASSED
+  Services:     ✅ RUNNING
+  Features:     ✅ WORKING
+  Docs:         ✅ COMPLETE
+
+═══════════════════════════════════════════════════════════════════════════
+
+  💡 TIP: Untuk merge ke main branch:
+  
+  1. git checkout main
+  2. git merge feature-export-and-filter
+  3. git push origin main
+
+═══════════════════════════════════════════════════════════════════════════
