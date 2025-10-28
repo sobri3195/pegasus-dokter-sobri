@@ -722,8 +722,250 @@ app.post('/export/bulk', (req, res) => {
   }
 });
 
+// ==================== NEW FEATURES ====================
+
+// Scheduler storage
+const SCHEDULER_FILE = path.join(__dirname, 'data', 'schedulers.json');
+
+if (!fs.existsSync(SCHEDULER_FILE)) {
+  fs.writeFileSync(SCHEDULER_FILE, JSON.stringify([], null, 2));
+}
+
+function loadSchedulers() {
+  try {
+    const data = fs.readFileSync(SCHEDULER_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveSchedulers(schedulers) {
+  fs.writeFileSync(SCHEDULER_FILE, JSON.stringify(schedulers, null, 2));
+}
+
+// Scheduler endpoints
+app.get('/schedulers', (req, res) => {
+  const schedulers = loadSchedulers();
+  res.json(schedulers);
+});
+
+app.post('/schedulers', (req, res) => {
+  const { name, url, frequency, scanType, enabled } = req.body;
+  
+  if (!name || !url || !frequency) {
+    return res.status(400).json({ error: 'Name, URL, and frequency are required' });
+  }
+
+  const schedulers = loadSchedulers();
+  const newScheduler = {
+    id: `scheduler-${Date.now()}`,
+    name,
+    url,
+    frequency, // 'daily', 'weekly', 'monthly'
+    scanType: scanType || 'basic',
+    enabled: enabled !== undefined ? enabled : true,
+    createdAt: new Date().toISOString(),
+    lastRun: null,
+    nextRun: calculateNextRun(frequency),
+    totalRuns: 0
+  };
+
+  schedulers.push(newScheduler);
+  saveSchedulers(schedulers);
+  
+  res.json({ success: true, scheduler: newScheduler });
+});
+
+app.put('/schedulers/:id', (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+  
+  const schedulers = loadSchedulers();
+  const index = schedulers.findIndex(s => s.id === id);
+  
+  if (index === -1) {
+    return res.status(404).json({ error: 'Scheduler not found' });
+  }
+
+  schedulers[index] = { ...schedulers[index], ...updates };
+  if (updates.frequency) {
+    schedulers[index].nextRun = calculateNextRun(updates.frequency);
+  }
+  
+  saveSchedulers(schedulers);
+  res.json({ success: true, scheduler: schedulers[index] });
+});
+
+app.delete('/schedulers/:id', (req, res) => {
+  const { id } = req.params;
+  
+  let schedulers = loadSchedulers();
+  schedulers = schedulers.filter(s => s.id !== id);
+  
+  saveSchedulers(schedulers);
+  res.json({ success: true });
+});
+
+function calculateNextRun(frequency) {
+  const now = new Date();
+  switch (frequency) {
+    case 'daily':
+      now.setDate(now.getDate() + 1);
+      break;
+    case 'weekly':
+      now.setDate(now.getDate() + 7);
+      break;
+    case 'monthly':
+      now.setMonth(now.getMonth() + 1);
+      break;
+  }
+  return now.toISOString();
+}
+
+// Scan Comparison endpoint
+app.post('/scans/compare', (req, res) => {
+  const { scanId1, scanId2 } = req.body;
+  
+  if (!scanId1 || !scanId2) {
+    return res.status(400).json({ error: 'Two scan IDs are required' });
+  }
+
+  const scans = loadScans();
+  const scan1 = scans.find(s => s.id === scanId1);
+  const scan2 = scans.find(s => s.id === scanId2);
+
+  if (!scan1 || !scan2) {
+    return res.status(404).json({ error: 'One or both scans not found' });
+  }
+
+  // Compare vulnerabilities
+  const vuln1Types = new Set(scan1.vulnerabilities?.map(v => v.type) || []);
+  const vuln2Types = new Set(scan2.vulnerabilities?.map(v => v.type) || []);
+
+  const newVulnerabilities = [...vuln2Types].filter(t => !vuln1Types.has(t));
+  const fixedVulnerabilities = [...vuln1Types].filter(t => !vuln2Types.has(t));
+  const commonVulnerabilities = [...vuln1Types].filter(t => vuln2Types.has(t));
+
+  // Compare severity counts
+  const countBySeverity = (scan) => {
+    const counts = { critical: 0, high: 0, medium: 0, low: 0 };
+    scan.vulnerabilities?.forEach(v => {
+      const severity = v.severity?.toLowerCase() || 'low';
+      if (counts[severity] !== undefined) counts[severity]++;
+    });
+    return counts;
+  };
+
+  const comparison = {
+    scan1: {
+      id: scan1.id,
+      url: scan1.url,
+      timestamp: scan1.timestamp,
+      totalVulnerabilities: scan1.vulnerabilities?.length || 0,
+      riskScore: scan1.risk_score || 0,
+      severityCounts: countBySeverity(scan1)
+    },
+    scan2: {
+      id: scan2.id,
+      url: scan2.url,
+      timestamp: scan2.timestamp,
+      totalVulnerabilities: scan2.vulnerabilities?.length || 0,
+      riskScore: scan2.risk_score || 0,
+      severityCounts: countBySeverity(scan2)
+    },
+    differences: {
+      newVulnerabilities: newVulnerabilities.length,
+      fixedVulnerabilities: fixedVulnerabilities.length,
+      commonVulnerabilities: commonVulnerabilities.length,
+      newVulnTypes: newVulnerabilities,
+      fixedVulnTypes: fixedVulnerabilities,
+      totalChange: (scan2.vulnerabilities?.length || 0) - (scan1.vulnerabilities?.length || 0),
+      riskScoreChange: (scan2.risk_score || 0) - (scan1.risk_score || 0),
+      improvement: (scan2.risk_score || 0) > (scan1.risk_score || 0)
+    }
+  };
+
+  res.json(comparison);
+});
+
+// Get scan timeline for a URL
+app.post('/scans/timeline', (req, res) => {
+  const { url } = req.body;
+  
+  if (!url) {
+    return res.status(400).json({ error: 'URL is required' });
+  }
+
+  const scans = loadScans();
+  const urlScans = scans
+    .filter(s => s.url === url)
+    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+  const timeline = urlScans.map(scan => ({
+    id: scan.id,
+    timestamp: scan.timestamp,
+    totalVulnerabilities: scan.vulnerabilities?.length || 0,
+    riskScore: scan.risk_score || 0,
+    severityCounts: {
+      critical: scan.vulnerabilities?.filter(v => v.severity?.toLowerCase() === 'critical').length || 0,
+      high: scan.vulnerabilities?.filter(v => v.severity?.toLowerCase() === 'high').length || 0,
+      medium: scan.vulnerabilities?.filter(v => v.severity?.toLowerCase() === 'medium').length || 0,
+      low: scan.vulnerabilities?.filter(v => v.severity?.toLowerCase() === 'low').length || 0
+    }
+  }));
+
+  res.json({
+    url,
+    totalScans: timeline.length,
+    timeline
+  });
+});
+
+// Real-time stats endpoint
+app.get('/stats/realtime', (req, res) => {
+  const scans = loadScans();
+  const schedulers = loadSchedulers();
+  
+  // Get recent scans (last 24 hours)
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const recentScans = scans.filter(s => new Date(s.timestamp) > oneDayAgo);
+
+  // Count vulnerabilities by severity
+  const severityCounts = { critical: 0, high: 0, medium: 0, low: 0 };
+  scans.forEach(scan => {
+    scan.vulnerabilities?.forEach(v => {
+      const severity = v.severity?.toLowerCase() || 'low';
+      if (severityCounts[severity] !== undefined) {
+        severityCounts[severity]++;
+      }
+    });
+  });
+
+  // Calculate trend
+  const lastWeekScans = scans.filter(s => 
+    new Date(s.timestamp) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  );
+
+  const stats = {
+    totalScans: scans.length,
+    scansLast24h: recentScans.length,
+    scansLastWeek: lastWeekScans.length,
+    totalVulnerabilities: scans.reduce((acc, s) => acc + (s.vulnerabilities?.length || 0), 0),
+    severityCounts,
+    activeSchedulers: schedulers.filter(s => s.enabled).length,
+    totalSchedulers: schedulers.length,
+    averageRiskScore: scans.length > 0 
+      ? Math.round(scans.reduce((acc, s) => acc + (s.risk_score || 0), 0) / scans.length)
+      : 0,
+    lastScan: scans.length > 0 ? scans[scans.length - 1] : null
+  };
+
+  res.json(stats);
+});
+
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
   console.log('Python scanner ready');
-  console.log('New features: Export & Advanced Search enabled');
+  console.log('New features: Export, Search, Scheduler, Comparison & Real-time Stats enabled');
 });

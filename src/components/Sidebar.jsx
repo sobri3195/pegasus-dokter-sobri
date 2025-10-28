@@ -4,6 +4,8 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
     { id: 'scan', name: 'Scan Website', icon: '🔍' },
     { id: 'results', name: 'Hasil Scan', icon: '📋' },
     { id: 'history', name: 'Advanced Search', icon: '🔎' },
+    { id: 'scheduler', name: 'Scheduler', icon: '⏰' },
+    { id: 'comparison', name: 'Comparison', icon: '📊' },
   ]
 
   return (

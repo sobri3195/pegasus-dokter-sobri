@@ -5,6 +5,8 @@ import Dashboard from './pages/Dashboard'
 import ScanWebsite from './pages/ScanWebsite'
 import ScanResults from './pages/ScanResults'
 import ScanHistory from './pages/ScanHistory'
+import ScanScheduler from './pages/ScanScheduler'
+import ScanComparison from './pages/ScanComparison'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard')
@@ -19,6 +21,10 @@ function App() {
         return <ScanResults />
       case 'history':
         return <ScanHistory />
+      case 'scheduler':
+        return <ScanScheduler />
+      case 'comparison':
+        return <ScanComparison />
       default:
         return <Dashboard />
     }

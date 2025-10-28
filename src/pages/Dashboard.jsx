@@ -14,6 +14,14 @@ const Dashboard = () => {
   useEffect(() => {
     loadStats()
     loadTrends()
+    
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(() => {
+      loadStats()
+      loadTrends()
+    }, 30000)
+    
+    return () => clearInterval(interval)
   }, [])
 
   const loadStats = async () => {
